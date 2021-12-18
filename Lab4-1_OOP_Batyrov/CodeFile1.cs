@@ -173,7 +173,7 @@ namespace Lab4_1_OOP_Batyrov
     class Circle
     {
         public int x, y;
-
+        public bool selected = false;
         public Circle(int x, int y)
         {
             this.x = x;
@@ -181,16 +181,6 @@ namespace Lab4_1_OOP_Batyrov
         }
     }
 
-    class Edge
-    {
-        public int v1, v2;
-
-        public Edge(int v1, int v2)
-        {
-            this.v1 = v1;
-            this.v2 = v2;
-        }
-    }
 
     class DrawGraph
     {
@@ -242,14 +232,6 @@ namespace Lab4_1_OOP_Batyrov
         {
             gr.DrawEllipse(redPen, (x - R), (y - R), 2 * R, 2 * R);
         }
-        public void drawEdge(Circle V1, Circle V2, Edge E, int numberE)
-        {
-            var radian = Math.Atan2((V2.y - V1.y), (V2.x - V1.x));
-            int x = (int)Math.Round(V2.x - (R * Math.Cos(radian)));
-            int y = (int)Math.Round(V2.y - (R * Math.Sin(radian)));
-            gr.DrawLine(darkGoldPen, V1.x, V1.y, x, y);
-
-        }
 
         public void drawALLGraph(Storage<Circle> V)
         {
@@ -259,8 +241,24 @@ namespace Lab4_1_OOP_Batyrov
                 drawCircle(V[i].x, V[i].y, (i + 1).ToString());
             }
         }
-
-
+        public void unSelect(Storage<Circle> V)
+        {
+            for(int i = 0; i < V.getCount(); i++)
+            {
+                V[i].selected = false;
+            }
+        }
+        public void erasePicked(Storage<Circle> V)
+        {
+            for (int i = 0; i < V.getCount(); i++)
+            {
+                if (V[i].selected == true)
+                {
+                    V[i].selected = false;
+                    V.getObjectAndDel(i);
+                }
+            }
+        }
 
     }
 }

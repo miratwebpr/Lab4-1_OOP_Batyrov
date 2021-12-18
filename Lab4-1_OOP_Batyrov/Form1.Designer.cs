@@ -36,7 +36,7 @@ namespace Lab4_1_OOP_Batyrov
             // sheet
             // 
             this.sheet.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.sheet.Location = new System.Drawing.Point(1, 0);
+            this.sheet.Location = new System.Drawing.Point(-3, -1);
             this.sheet.Name = "sheet";
             this.sheet.Size = new System.Drawing.Size(470, 353);
             this.sheet.TabIndex = 0;
@@ -51,6 +51,8 @@ namespace Lab4_1_OOP_Batyrov
             this.Controls.Add(this.sheet);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.sheet)).EndInit();
             this.ResumeLayout(false);
 
