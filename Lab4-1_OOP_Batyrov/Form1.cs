@@ -20,12 +20,9 @@ namespace Lab4_1_OOP_Batyrov
         public Form1()
         {
             InitializeComponent();
-
             V = new Storage<Circle>();
             G = new DrawGraph(sheet.Width, sheet.Height);
-            sheet.Image = G.GetBitmap();
         }
-        
         private void sheet_MouseClick(object sender, MouseEventArgs e)
         {
             
@@ -34,7 +31,7 @@ namespace Lab4_1_OOP_Batyrov
                 bool flag = false;
                 for (int i = 0; i < V.getCount(); i++)
                 {
-                    if (Math.Pow((V[i].x - e.X), 2) + Math.Pow((V[i].y - e.Y), 2) <= G.R * G.R)
+                    if (V[i].isInCircle(e.X, e.Y))
                     {
                         if (selected1 != -1)
                         {
@@ -46,8 +43,8 @@ namespace Lab4_1_OOP_Batyrov
                         }
                         if (selected1 == -1)
                         {
-                            V[i].selected = true;
-                            G.drawSelectedCircle(V[i].x, V[i].y);
+                            V[i].selectCircle();
+                            V[i].drawSelectedCircle(G.getGraphics());
                             selected1 = i;
                             sheet.Image = G.GetBitmap();
                             flag = true;
@@ -59,12 +56,12 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     G.unSelect(V);
                     V.pushBack(new Circle(e.X, e.Y));
-                    V[V.getCount() - 1].selected = true;
-                    G.drawCircle(e.X, e.Y, V.getCount().ToString());
+                    V[V.getCount() - 1].selectCircle();
+                    V[V.getCount() - 1].drawCircle(G.getGraphics(), V.getCount().ToString());
                     G.clearSheet();
                     G.drawALLGraph(V);
                     sheet.Image = G.GetBitmap();
-                    G.drawSelectedCircle(e.X, e.Y);
+                    V[V.getCount() - 1].drawSelectedCircle(G.getGraphics());
                 }
 
             }
@@ -72,10 +69,10 @@ namespace Lab4_1_OOP_Batyrov
             {
                 for (int i = 0; i < V.getCount(); i++)
                 {
-                    if (Math.Pow((V[i].x - e.X), 2) + Math.Pow((V[i].y - e.Y), 2) <= G.R * G.R)
+                    if (V[i].isInCircle(e.X, e.Y))
                     {
-                            G.drawSelectedCircle(V[i].x, V[i].y);
-                            V[i].selected = true;
+                            V[i].drawSelectedCircle(G.getGraphics());
+                            V[i].selectCircle();
                             selected1 = i;
                             sheet.Image = G.GetBitmap();
                             break;
@@ -94,8 +91,10 @@ namespace Lab4_1_OOP_Batyrov
             if (e.KeyCode == Keys.Delete)
             {
                 G.erasePicked(V);
+                G.clearSheet();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
             }
-            return;
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
@@ -103,12 +102,6 @@ namespace Lab4_1_OOP_Batyrov
             if (e.KeyCode == Keys.ControlKey)
             {
                 isCtrl = false;
-            }
-            if (e.KeyCode == Keys.Delete)
-            {
-                G.clearSheet();
-                G.drawALLGraph(V);
-                sheet.Image = G.GetBitmap();
             }
         }
 

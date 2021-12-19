@@ -172,12 +172,56 @@ namespace Lab4_1_OOP_Batyrov
     }
     class Circle
     {
-        public int x, y;
-        public bool selected = false;
+        private int x, y;
+        private int R = 20;
+        private bool selected = false;
         public Circle(int x, int y)
         {
             this.x = x;
             this.y = y;
+        }
+        public bool isInCircle(int X, int Y)
+        {
+            return (x - X) * (x - X) + (y - Y) * (y - Y) <= R * R;
+        }
+        public void selectCircle()
+        {
+            selected = true;
+        }
+        public void unSelectCircle()
+        {
+            selected = false;
+        }
+        public int getX()
+        {
+            return x;
+        }
+        public int getY()
+        {
+            return y;
+        }
+        public bool checkSelected()
+        {
+            if (selected)
+                return true;
+            return false;
+        }
+        public void drawCircle(Graphics gr, string number)
+        {
+            PointF point;
+            Pen blackPen = new Pen(Color.Black);
+            blackPen.Width = 2;
+            Font fo = new Font("Arial", 15);
+            Brush br = Brushes.Black; 
+            gr.FillEllipse(Brushes.White, (x - R), (y - R), 2 * R, 2 * R);
+            gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
+            point = new PointF(x - 9, y - 9);
+            gr.DrawString(number, fo, br, point);
+        }
+        public void drawSelectedCircle(Graphics gr)
+        {
+            Pen redPen = new Pen(Color.Red);
+            gr.DrawEllipse(redPen, (x - R), (y - R), 2 * R, 2 * R);
         }
     }
 
@@ -191,7 +235,6 @@ namespace Lab4_1_OOP_Batyrov
         Graphics gr;
         Font fo;
         Brush br;
-        PointF point;
         public int R = 20; //радиус окружности вершины
 
         public DrawGraph(int width, int height)
@@ -214,23 +257,13 @@ namespace Lab4_1_OOP_Batyrov
         {
             return bitmap;
         }
-
+        public Graphics getGraphics()
+        {
+            return gr;
+        }
         public void clearSheet()
         {
             gr.Clear(Color.White);
-        }
-
-        public void drawCircle(int x, int y, string number)
-        {
-            gr.FillEllipse(Brushes.White, (x - R), (y - R), 2 * R, 2 * R);
-            gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
-            point = new PointF(x - 9, y - 9);
-            gr.DrawString(number, fo, br, point);
-        }
-
-        public void drawSelectedCircle(int x, int y)
-        {
-            gr.DrawEllipse(redPen, (x - R), (y - R), 2 * R, 2 * R);
         }
 
         public void drawALLGraph(Storage<Circle> V)
@@ -238,24 +271,27 @@ namespace Lab4_1_OOP_Batyrov
             //рисуем вершины
             for (int i = 0; i < V.getCount(); i++)
             {
-                drawCircle(V[i].x, V[i].y, (i + 1).ToString());
+                V[i].drawCircle(gr, (i + 1).ToString());
             }
         }
         public void unSelect(Storage<Circle> V)
         {
             for(int i = 0; i < V.getCount(); i++)
             {
-                V[i].selected = false;
+                V[i].unSelectCircle();
             }
         }
         public void erasePicked(Storage<Circle> V)
         {
-            for (int i = 0; i < V.getCount(); i++)
+            for (int i = 0; i < V.getCount();)
             {
-                if (V[i].selected == true)
+                if (V[i].checkSelected())
                 {
-                    V[i].selected = false;
                     V.getObjectAndDel(i);
+                }
+                else
+                {
+                    i++;
                 }
             }
         }
