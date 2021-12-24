@@ -170,25 +170,21 @@ namespace Lab4_1_OOP_Batyrov
             return endIter;
         }
     }
-    class Circle
+    abstract class geoFigures
     {
-        private int x, y;
-        private int R = 20;
-        private bool selected = false;
-        public Circle(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-        public bool isInCircle(int X, int Y)
-        {
-            return (x - X) * (x - X) + (y - Y) * (y - Y) <= R * R;
-        }
-        public void selectCircle()
+        protected int x, y;
+        protected bool selected = false;
+
+        abstract public bool isCursorIn(int X, int Y);
+        abstract public void drawFigure(Graphics gr);
+        abstract public void drawSelectedFigure(Graphics gr);
+        abstract public void enlargeFigure(int addN);
+        abstract public void reduceFigure(int minusN);
+        public void select()
         {
             selected = true;
         }
-        public void unSelectCircle()
+        public void unSelect()
         {
             selected = false;
         }
@@ -198,7 +194,21 @@ namespace Lab4_1_OOP_Batyrov
                 return true;
             return false;
         }
-        public void drawCircle(Graphics gr, string number)
+
+    }
+    class Circle : geoFigures
+    {
+        private int R = 20;
+        public Circle(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+        public override bool isCursorIn(int X, int Y)
+        {
+            return (x - X) * (x - X) + (y - Y) * (y - Y) <= R * R;
+        }
+        public override void drawFigure(Graphics gr)
         {
             PointF point;
             Pen blackPen = new Pen(Color.Black);
@@ -209,16 +219,16 @@ namespace Lab4_1_OOP_Batyrov
             gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
             point = new PointF(x - 9, y - 9);
         }
-        public void drawSelectedCircle(Graphics gr)
+        public override void drawSelectedFigure(Graphics gr)
         {
             Pen redPen = new Pen(Color.Red);
             gr.DrawEllipse(redPen, (x - R), (y - R), 2 * R, 2 * R);
         }
-        public void enLargeCircle(int addR)
+        public override void enlargeFigure(int addR)
         {
             R += addR;
         }
-        public void reduceCircle(int minusR)
+        public override void reduceFigure(int minusR)
         {
             R -= minusR;
         }
@@ -270,14 +280,14 @@ namespace Lab4_1_OOP_Batyrov
             //рисуем вершины
             for (int i = 0; i < V.getCount(); i++)
             {
-                V[i].drawCircle(gr, (i + 1).ToString());
+                V[i].drawFigure(gr);
             }
         }
-        public void unSelect(Storage<Circle> V)
+        public void unSelectAll(Storage<Circle> V)
         {
             for(int i = 0; i < V.getCount(); i++)
             {
-                V[i].unSelectCircle();
+                V[i].unSelect();
             }
         }
         public void erasePicked(Storage<Circle> V)

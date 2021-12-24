@@ -31,20 +31,20 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     for (int i = 0; i < V.getCount(); i++)
                     {
-                        if (V[i].isInCircle(e.X, e.Y))
+                        if (V[i].isCursorIn(e.X, e.Y))
                         {
                             if (selected1 != -1)
                             {
                                 selected1 = -1;
-                                G.unSelect(V);
+                                G.unSelectAll(V);
                                 G.clearSheet();
                                 G.drawALLGraph(V);
                                 sheet.Image = G.GetBitmap();
                             }
                             if (selected1 == -1)
                             {
-                                V[i].selectCircle();
-                                V[i].drawSelectedCircle(G.getGraphics());
+                                V[i].select();
+                                V[i].drawSelectedFigure(G.getGraphics());
                                 selected1 = i;
                                 sheet.Image = G.GetBitmap();
                                 break;
@@ -56,10 +56,10 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     for (int i = 0; i < V.getCount(); i++)
                     {
-                        if (V[i].isInCircle(e.X, e.Y))
+                        if (V[i].isCursorIn(e.X, e.Y))
                         {
-                            V[i].drawSelectedCircle(G.getGraphics());
-                            V[i].selectCircle();
+                            V[i].drawSelectedFigure(G.getGraphics());
+                            V[i].select();
                             selected1 = i;
                             sheet.Image = G.GetBitmap();
                             break;
@@ -69,14 +69,14 @@ namespace Lab4_1_OOP_Batyrov
             }
             else if (circleBut.Enabled == false)
             {
-                G.unSelect(V);
+                G.unSelectAll(V);
                 V.pushBack(new Circle(e.X, e.Y));
-                V[V.getCount() - 1].selectCircle();
-                V[V.getCount() - 1].drawCircle(G.getGraphics(), V.getCount().ToString());
+                V[V.getCount() - 1].select();
+                V[V.getCount() - 1].drawFigure(G.getGraphics());
                 G.clearSheet();
                 G.drawALLGraph(V);
                 sheet.Image = G.GetBitmap();
-                V[V.getCount() - 1].drawSelectedCircle(G.getGraphics());
+                V[V.getCount() - 1].drawSelectedFigure(G.getGraphics());
             }
         }
 
@@ -102,7 +102,7 @@ namespace Lab4_1_OOP_Batyrov
                     {
                         if (V[i].checkSelected())
                         {
-                            V[i].enLargeCircle(1);
+                            V[i].enlargeFigure(1);
                         }
                     }
                     G.clearSheet();
@@ -118,7 +118,7 @@ namespace Lab4_1_OOP_Batyrov
                     {
                         if (V[i].checkSelected())
                         {
-                            V[i].enLargeCircle(1);
+                            V[i].reduceFigure(1);
                         }
                     }
                     G.clearSheet();
