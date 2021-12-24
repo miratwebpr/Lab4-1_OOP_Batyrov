@@ -208,12 +208,19 @@ namespace Lab4_1_OOP_Batyrov
             gr.FillEllipse(Brushes.White, (x - R), (y - R), 2 * R, 2 * R);
             gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
             point = new PointF(x - 9, y - 9);
-            gr.DrawString(number, fo, br, point);
         }
         public void drawSelectedCircle(Graphics gr)
         {
             Pen redPen = new Pen(Color.Red);
             gr.DrawEllipse(redPen, (x - R), (y - R), 2 * R, 2 * R);
+        }
+        public void enLargeCircle(int addR)
+        {
+            R += addR;
+        }
+        public void reduceCircle(int minusR)
+        {
+            R -= minusR;
         }
     }
 

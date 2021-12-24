@@ -24,60 +24,59 @@ namespace Lab4_1_OOP_Batyrov
             G = new DrawGraph(sheet.Width, sheet.Height);
         }
         private void sheet_MouseClick(object sender, MouseEventArgs e)
-        {
-            
-            if (isCtrl == false)
+        { 
+            if (cursorBut.Enabled == false)
             {
-                bool flag = false;
-                for (int i = 0; i < V.getCount(); i++)
+                if (isCtrl == false)
                 {
-                    if (V[i].isInCircle(e.X, e.Y))
+                    for (int i = 0; i < V.getCount(); i++)
                     {
-                        if (selected1 != -1)
+                        if (V[i].isInCircle(e.X, e.Y))
                         {
-                            selected1 = -1;
-                            G.unSelect(V);
-                            G.clearSheet();
-                            G.drawALLGraph(V);
-                            sheet.Image = G.GetBitmap();
+                            if (selected1 != -1)
+                            {
+                                selected1 = -1;
+                                G.unSelect(V);
+                                G.clearSheet();
+                                G.drawALLGraph(V);
+                                sheet.Image = G.GetBitmap();
+                            }
+                            if (selected1 == -1)
+                            {
+                                V[i].selectCircle();
+                                V[i].drawSelectedCircle(G.getGraphics());
+                                selected1 = i;
+                                sheet.Image = G.GetBitmap();
+                                break;
+                            }
                         }
-                        if (selected1 == -1)
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < V.getCount(); i++)
+                    {
+                        if (V[i].isInCircle(e.X, e.Y))
                         {
-                            V[i].selectCircle();
                             V[i].drawSelectedCircle(G.getGraphics());
+                            V[i].selectCircle();
                             selected1 = i;
                             sheet.Image = G.GetBitmap();
-                            flag = true;
                             break;
                         }
                     }
                 }
-                if (flag == false)
-                {
-                    G.unSelect(V);
-                    V.pushBack(new Circle(e.X, e.Y));
-                    V[V.getCount() - 1].selectCircle();
-                    V[V.getCount() - 1].drawCircle(G.getGraphics(), V.getCount().ToString());
-                    G.clearSheet();
-                    G.drawALLGraph(V);
-                    sheet.Image = G.GetBitmap();
-                    V[V.getCount() - 1].drawSelectedCircle(G.getGraphics());
-                }
-
             }
-            else
+            else if (circleBut.Enabled == false)
             {
-                for (int i = 0; i < V.getCount(); i++)
-                {
-                    if (V[i].isInCircle(e.X, e.Y))
-                    {
-                            V[i].drawSelectedCircle(G.getGraphics());
-                            V[i].selectCircle();
-                            selected1 = i;
-                            sheet.Image = G.GetBitmap();
-                            break;
-                    }
-                }
+                G.unSelect(V);
+                V.pushBack(new Circle(e.X, e.Y));
+                V[V.getCount() - 1].selectCircle();
+                V[V.getCount() - 1].drawCircle(G.getGraphics(), V.getCount().ToString());
+                G.clearSheet();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
+                V[V.getCount() - 1].drawSelectedCircle(G.getGraphics());
             }
         }
 
@@ -95,6 +94,38 @@ namespace Lab4_1_OOP_Batyrov
                 G.drawALLGraph(V);
                 sheet.Image = G.GetBitmap();
             }
+            if(e.KeyCode == Keys.PageUp)
+            {
+                if(cursorBut.Enabled == false)
+                {
+                    for(int i = 0; i < V.getCount(); i++)
+                    {
+                        if (V[i].checkSelected())
+                        {
+                            V[i].enLargeCircle(1);
+                        }
+                    }
+                    G.clearSheet();
+                    G.drawALLGraph(V);
+                    sheet.Image = G.GetBitmap();
+                }
+            }
+            if (e.KeyCode == Keys.PageDown)
+            {
+                if (cursorBut.Enabled == false)
+                {
+                    for (int i = 0; i < V.getCount(); i++)
+                    {
+                        if (V[i].checkSelected())
+                        {
+                            V[i].enLargeCircle(1);
+                        }
+                    }
+                    G.clearSheet();
+                    G.drawALLGraph(V);
+                    sheet.Image = G.GetBitmap();
+                }
+            }
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
@@ -105,5 +136,22 @@ namespace Lab4_1_OOP_Batyrov
             }
         }
 
+        private void cursorBut_Click(object sender, EventArgs e)
+        {
+            cursorBut.Enabled = false;
+            circleBut.Enabled = true;
+            triangleBut.Enabled = true;
+            rectangleBut.Enabled = true;
+            colorBut.Enabled = true;
+        }
+
+        private void circleBut_Click(object sender, EventArgs e)
+        {
+            circleBut.Enabled = false;
+            cursorBut.Enabled = true;
+            triangleBut.Enabled = true;
+            rectangleBut.Enabled = true;
+            colorBut.Enabled = true;
+        }
     }
 }
