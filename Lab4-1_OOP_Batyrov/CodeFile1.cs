@@ -192,14 +192,6 @@ namespace Lab4_1_OOP_Batyrov
         {
             selected = false;
         }
-        public int getX()
-        {
-            return x;
-        }
-        public int getY()
-        {
-            return y;
-        }
         public bool checkSelected()
         {
             if (selected)
