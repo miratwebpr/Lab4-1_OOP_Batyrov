@@ -94,9 +94,9 @@ namespace Lab4_1_OOP_Batyrov
             // 
             this.sheet.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.sheet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sheet.Location = new System.Drawing.Point(-3, -1);
+            this.sheet.Location = new System.Drawing.Point(12, 12);
             this.sheet.Name = "sheet";
-            this.sheet.Size = new System.Drawing.Size(716, 451);
+            this.sheet.Size = new System.Drawing.Size(701, 426);
             this.sheet.TabIndex = 0;
             this.sheet.TabStop = false;
             this.sheet.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sheet_MouseClick);

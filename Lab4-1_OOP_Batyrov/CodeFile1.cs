@@ -194,7 +194,11 @@ namespace Lab4_1_OOP_Batyrov
                 return true;
             return false;
         }
-
+        virtual public void moveFigure(int addX, int addY)
+        {
+            x += addX;
+            y += addY;
+        }
     }
     class Circle : geoFigures
     {
@@ -232,6 +236,7 @@ namespace Lab4_1_OOP_Batyrov
         {
             R -= minusR;
         }
+
     }
     class Triangle : geoFigures
     {
@@ -278,6 +283,25 @@ namespace Lab4_1_OOP_Batyrov
             points[0].Y += minusN;
             points[1].X += minusN;
             points[2].X -= minusN;
+        }
+        public override void moveFigure(int addX, int addY)
+        {
+            int tempX = x - points[1].X;
+            int tempY = y - points[0].Y;
+            x += addX;
+            y += addY;
+            if (addX != 0)
+            {
+                points[0].X = x;
+                points[1].X = x - tempX;
+                points[2].X = x + tempX;
+            }
+            else
+            {
+                points[0].Y = y - tempY;
+                points[1].Y = y + tempY;
+                points[2].Y = y + tempY;
+            }    
         }
     }
 

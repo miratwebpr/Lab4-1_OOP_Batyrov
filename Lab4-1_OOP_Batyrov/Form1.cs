@@ -137,6 +137,59 @@ namespace Lab4_1_OOP_Batyrov
                     sheet.Image = G.GetBitmap();
                 }
             }
+
+            if(e.KeyCode == Keys.W && cursorBut.Enabled == false)
+            {
+                for (int i = 0; i < V.getCount(); i++)
+                {
+                    if (V[i].checkSelected())
+                    {
+                        V[i].moveFigure(0, -5);
+                    }
+                }
+                G.clearSheet();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
+            }
+            if (e.KeyCode == Keys.S && cursorBut.Enabled == false)
+            {
+                for (int i = 0; i < V.getCount(); i++)
+                {
+                    if (V[i].checkSelected())
+                    {
+                        V[i].moveFigure(0, 5);
+                    }
+                }
+                G.clearSheet();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
+            }
+            if (e.KeyCode == Keys.A && cursorBut.Enabled == false)
+            {
+                for (int i = 0; i < V.getCount(); i++)
+                {
+                    if (V[i].checkSelected())
+                    {
+                        V[i].moveFigure(-5, 0);
+                    }
+                }
+                G.clearSheet();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
+            }
+            if (e.KeyCode == Keys.D && cursorBut.Enabled == false)
+            {
+                for (int i = 0; i < V.getCount(); i++)
+                {
+                    if (V[i].checkSelected())
+                    {
+                        V[i].moveFigure(5, 0);
+                    }
+                }
+                G.clearSheet();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
+            }
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
