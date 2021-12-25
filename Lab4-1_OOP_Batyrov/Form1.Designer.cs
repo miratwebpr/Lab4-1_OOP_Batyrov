@@ -69,6 +69,7 @@ namespace Lab4_1_OOP_Batyrov
             this.rectangleBut.Size = new System.Drawing.Size(70, 46);
             this.rectangleBut.TabIndex = 3;
             this.rectangleBut.UseVisualStyleBackColor = true;
+            this.rectangleBut.Click += new System.EventHandler(this.rectangleBut_Click);
             // 
             // triangleBut
             // 

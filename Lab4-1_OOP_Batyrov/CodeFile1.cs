@@ -175,7 +175,6 @@ namespace Lab4_1_OOP_Batyrov
         //центр фигуры
         protected int x, y;
         protected bool selected = false;
-        protected int width;
         abstract public bool isCursorIn(int X, int Y);
         abstract public void drawFigure(Graphics gr);
         abstract public void drawSelectedFigure(Graphics gr);
@@ -314,7 +313,67 @@ namespace Lab4_1_OOP_Batyrov
             }    
         }
     }
-
+    class Rectangle : geoFigures
+    {
+        int width;
+        int height;
+        Point leftUpAngle = new Point();
+        public Rectangle(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+            width = 50;
+            height = 50;
+            leftUpAngle.X = x - width / 2;
+            leftUpAngle.Y = y - height / 2;
+        }
+        public override bool isCursorIn(int X, int Y)
+        {
+            if (X >= leftUpAngle.X && X <= leftUpAngle.X + width && Y <= leftUpAngle.Y + height && Y >= leftUpAngle.Y)
+                return true;
+            return false;
+        }
+        public override void drawFigure(Graphics gr)
+        {
+            Pen blackPen = new Pen(Color.Black);
+            blackPen.Width = 2;
+            gr.DrawRectangle(blackPen, leftUpAngle.X, leftUpAngle.Y, width, height);
+            gr.FillRectangle(Brushes.White, leftUpAngle.X, leftUpAngle.Y, width, height);
+        }
+        public override void drawSelectedFigure(Graphics gr)
+        {
+            Pen redPen = new Pen(Color.Red);
+            redPen.Width = 2;
+            gr.DrawRectangle(redPen, leftUpAngle.X, leftUpAngle.Y, width, height);
+        }
+        public override void enlargeFigure(int addN)
+        {
+            width += addN;
+            height += addN;
+            leftUpAngle.X = x - width / 2;
+            leftUpAngle.Y = y - height / 2;
+        }
+        public override void reduceFigure(int minusN)
+        {
+            width -= minusN;
+            height -= minusN;
+            leftUpAngle.X = x - width / 2;
+            leftUpAngle.Y = y - height / 2;
+        }
+        public override void moveFigure(int addX, int addY, PictureBox sheet)
+        {
+            if (addX != 0 && (x - width / 2 + addX > 20 || addX > 0) && (x + width / 2 + addX < sheet.Width - 20 || addX < 0))
+            {
+                x += addX;
+                leftUpAngle.X = x - width / 2;
+            }
+            else if (addY != 0 && (y - height / 2 + addY > 20 || addX > 0) && (y + height / 2 + addY < sheet.Height - 20 || addY < 0))
+            {
+                y += addY;
+                leftUpAngle.Y = y - height / 2;
+            }
+        }
+    }
     class DrawGraph
     {
         Bitmap bitmap;

@@ -89,6 +89,17 @@ namespace Lab4_1_OOP_Batyrov
                 sheet.Image = G.GetBitmap();
                 V[V.getCount() - 1].drawSelectedFigure(G.getGraphics());
             }
+            else if(rectangleBut.Enabled == false)
+            {
+                G.unSelectAll(V);
+                V.pushBack(new Rectangle(e.X, e.Y));
+                V[V.getCount() - 1].select();
+                V[V.getCount() - 1].drawFigure(G.getGraphics());
+                G.clearSheet();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
+                V[V.getCount() - 1].drawSelectedFigure(G.getGraphics());
+            }
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -224,6 +235,15 @@ namespace Lab4_1_OOP_Batyrov
             circleBut.Enabled = true;
             cursorBut.Enabled = true;
             rectangleBut.Enabled = true;
+            colorBut.Enabled = true;
+        }
+
+        private void rectangleBut_Click(object sender, EventArgs e)
+        {
+            rectangleBut.Enabled = false;
+            triangleBut.Enabled = true;
+            circleBut.Enabled = true;
+            cursorBut.Enabled = true;
             colorBut.Enabled = true;
         }
     }
