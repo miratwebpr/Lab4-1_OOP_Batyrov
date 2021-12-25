@@ -286,8 +286,10 @@ namespace Lab4_1_OOP_Batyrov
         }
         public override void moveFigure(int addX, int addY)
         {
+            
             int tempX = x - points[1].X;
-            int tempY = y - points[0].Y;
+            int tempY0 = y - points[0].Y;
+            int tempY1 = y - points[1].Y;
             x += addX;
             y += addY;
             if (addX != 0)
@@ -298,9 +300,9 @@ namespace Lab4_1_OOP_Batyrov
             }
             else
             {
-                points[0].Y = y - tempY;
-                points[1].Y = y + tempY;
-                points[2].Y = y + tempY;
+                points[0].Y = y - tempY0;
+                points[1].Y = y - tempY1;
+                points[2].Y = y - tempY1;
             }    
         }
     }
