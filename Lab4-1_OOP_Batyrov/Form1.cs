@@ -246,5 +246,25 @@ namespace Lab4_1_OOP_Batyrov
             cursorBut.Enabled = true;
             colorBut.Enabled = true;
         }
+
+        private void colorBut_Click(object sender, EventArgs e)
+        { 
+            colorBut.Enabled = false;
+            rectangleBut.Enabled = true;
+            triangleBut.Enabled = true;
+            circleBut.Enabled = true;
+            cursorBut.Enabled = true;
+            colorDialog1.ShowDialog();
+            for (int i = 0; i < V.getCount(); i++)
+            {
+                if (V[i].checkSelected())
+                {
+                    V[i].changeColor(colorDialog1.Color);
+                }
+            }
+            G.clearSheet();
+            G.drawALLGraph(V);
+            sheet.Image = G.GetBitmap();
+        }
     }
 }

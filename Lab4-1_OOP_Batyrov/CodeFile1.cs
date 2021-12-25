@@ -175,6 +175,7 @@ namespace Lab4_1_OOP_Batyrov
         //центр фигуры
         protected int x, y;
         protected bool selected = false;
+        protected Brush myBrush;
         abstract public bool isCursorIn(int X, int Y);
         abstract public void drawFigure(Graphics gr);
         abstract public void drawSelectedFigure(Graphics gr);
@@ -199,6 +200,11 @@ namespace Lab4_1_OOP_Batyrov
             x += addX;
             y += addY;
         }
+        public void changeColor(Color color)
+        {
+            Brush newBrush = new SolidBrush(color); 
+            myBrush = newBrush;
+        }
     }
     class Circle : geoFigures
     {
@@ -207,6 +213,7 @@ namespace Lab4_1_OOP_Batyrov
         {
             this.x = x;
             this.y = y;
+            myBrush = Brushes.White;
         }
         public override bool isCursorIn(int X, int Y)
         {
@@ -216,7 +223,7 @@ namespace Lab4_1_OOP_Batyrov
         {
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
-            gr.FillEllipse(Brushes.White, (x - R), (y - R), 2 * R, 2 * R);
+            gr.FillEllipse(myBrush, (x - R), (y - R), 2 * R, 2 * R);
             gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
         }
         public override void drawSelectedFigure(Graphics gr)
@@ -256,6 +263,7 @@ namespace Lab4_1_OOP_Batyrov
             points[0].X = x; points[0].Y = y - 40;
             points[1].X = x - 20; points[1].Y = y + 10;
             points[2].X = x + 20; points[2].Y = y + 10;
+            myBrush = Brushes.White;
         }
         public override bool isCursorIn(int X, int Y)
         {
@@ -272,7 +280,7 @@ namespace Lab4_1_OOP_Batyrov
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
             gr.DrawPolygon(blackPen, points);
-            gr.FillPolygon(Brushes.White, points);
+            gr.FillPolygon(myBrush, points);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -326,6 +334,7 @@ namespace Lab4_1_OOP_Batyrov
             height = 50;
             leftUpAngle.X = x - width / 2;
             leftUpAngle.Y = y - height / 2;
+            myBrush = Brushes.White;
         }
         public override bool isCursorIn(int X, int Y)
         {
@@ -338,7 +347,7 @@ namespace Lab4_1_OOP_Batyrov
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
             gr.DrawRectangle(blackPen, leftUpAngle.X, leftUpAngle.Y, width, height);
-            gr.FillRectangle(Brushes.White, leftUpAngle.X, leftUpAngle.Y, width, height);
+            gr.FillRectangle(myBrush, leftUpAngle.X, leftUpAngle.Y, width, height);
         }
         public override void drawSelectedFigure(Graphics gr)
         {

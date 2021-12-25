@@ -49,6 +49,7 @@ namespace Lab4_1_OOP_Batyrov
             this.colorBut.Size = new System.Drawing.Size(70, 68);
             this.colorBut.TabIndex = 5;
             this.colorBut.UseVisualStyleBackColor = true;
+            this.colorBut.Click += new System.EventHandler(this.colorBut_Click);
             // 
             // cursorBut
             // 
