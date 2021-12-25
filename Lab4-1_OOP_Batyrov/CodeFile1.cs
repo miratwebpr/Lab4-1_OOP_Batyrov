@@ -172,9 +172,9 @@ namespace Lab4_1_OOP_Batyrov
     }
     abstract class geoFigures
     {
+        //центр фигуры
         protected int x, y;
         protected bool selected = false;
-
         abstract public bool isCursorIn(int X, int Y);
         abstract public void drawFigure(Graphics gr);
         abstract public void drawSelectedFigure(Graphics gr);
@@ -233,7 +233,53 @@ namespace Lab4_1_OOP_Batyrov
             R -= minusR;
         }
     }
+    class Triangle : geoFigures
+    {
+        Point[] points = new Point[3];
 
+        public Triangle(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+            points[0].X = x; points[0].Y = y - 40;
+            points[1].X = x - 20; points[1].Y = y + 10;
+            points[2].X = x + 20; points[2].Y = y + 10;
+        }
+        public override bool isCursorIn(int X, int Y)
+        {
+            int a = (points[0].X - X) * (points[1].Y - points[0].Y) - (points[1].X - points[0].X) * (points[0].Y - Y);
+            int b = (points[1].X - X) * (points[2].Y - points[1].Y) - (points[2].X - points[1].X) * (points[1].Y - Y);
+            int c = (points[2].X - X) * (points[0].Y - points[2].Y) - (points[0].X - points[2].X) * (points[2].Y - Y);
+            if ((a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0))
+                return true;
+            return false;
+
+        }
+        public override void drawFigure(Graphics gr)
+        {
+            Pen blackPen = new Pen(Color.Black);
+            blackPen.Width = 2;
+            gr.DrawPolygon(blackPen, points);
+        }
+        public override void drawSelectedFigure(Graphics gr)
+        {
+            Pen redPen = new Pen(Color.Red);
+            redPen.Width = 2;
+            gr.DrawPolygon(redPen, points);
+        }
+        public override void enlargeFigure(int addN)
+        {
+            points[0].Y -= addN;
+            points[1].X -= addN;
+            points[2].X += addN;
+        }
+        public override void reduceFigure(int minusN)
+        {
+            points[0].Y += minusN;
+            points[1].X += minusN;
+            points[2].X -= minusN;
+        }
+    }
 
     class DrawGraph
     {
@@ -275,7 +321,7 @@ namespace Lab4_1_OOP_Batyrov
             gr.Clear(Color.White);
         }
 
-        public void drawALLGraph(Storage<Circle> V)
+        public void drawALLGraph(Storage<geoFigures> V)
         {
             //рисуем вершины
             for (int i = 0; i < V.getCount(); i++)
@@ -283,14 +329,14 @@ namespace Lab4_1_OOP_Batyrov
                 V[i].drawFigure(gr);
             }
         }
-        public void unSelectAll(Storage<Circle> V)
+        public void unSelectAll(Storage<geoFigures> V)
         {
             for(int i = 0; i < V.getCount(); i++)
             {
                 V[i].unSelect();
             }
         }
-        public void erasePicked(Storage<Circle> V)
+        public void erasePicked(Storage<geoFigures> V)
         {
             for (int i = 0; i < V.getCount();)
             {

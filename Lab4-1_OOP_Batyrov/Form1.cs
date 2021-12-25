@@ -14,13 +14,13 @@ namespace Lab4_1_OOP_Batyrov
     public partial class Form1 : Form
     {
         DrawGraph G;
-        Storage<Circle> V;
+        Storage<geoFigures> V;
         int selected1;
         bool isCtrl = false;
         public Form1()
         {
             InitializeComponent();
-            V = new Storage<Circle>();
+            V = new Storage<geoFigures>();
             G = new DrawGraph(sheet.Width, sheet.Height);
         }
         private void sheet_MouseClick(object sender, MouseEventArgs e)
@@ -78,6 +78,17 @@ namespace Lab4_1_OOP_Batyrov
                 sheet.Image = G.GetBitmap();
                 V[V.getCount() - 1].drawSelectedFigure(G.getGraphics());
             }
+            else if(triangleBut.Enabled == false)
+            {
+                G.unSelectAll(V);
+                V.pushBack(new Triangle(e.X, e.Y));
+                V[V.getCount() - 1].select();
+                V[V.getCount() - 1].drawFigure(G.getGraphics());
+                G.clearSheet();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
+                V[V.getCount() - 1].drawSelectedFigure(G.getGraphics());
+            }
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -102,7 +113,7 @@ namespace Lab4_1_OOP_Batyrov
                     {
                         if (V[i].checkSelected())
                         {
-                            V[i].enlargeFigure(1);
+                            V[i].enlargeFigure(10);
                         }
                     }
                     G.clearSheet();
@@ -118,7 +129,7 @@ namespace Lab4_1_OOP_Batyrov
                     {
                         if (V[i].checkSelected())
                         {
-                            V[i].reduceFigure(1);
+                            V[i].reduceFigure(10);
                         }
                     }
                     G.clearSheet();
@@ -150,6 +161,15 @@ namespace Lab4_1_OOP_Batyrov
             circleBut.Enabled = false;
             cursorBut.Enabled = true;
             triangleBut.Enabled = true;
+            rectangleBut.Enabled = true;
+            colorBut.Enabled = true;
+        }
+
+        private void triangleBut_Click(object sender, EventArgs e)
+        {
+            triangleBut.Enabled = false;
+            circleBut.Enabled = true;
+            cursorBut.Enabled = true;
             rectangleBut.Enabled = true;
             colorBut.Enabled = true;
         }

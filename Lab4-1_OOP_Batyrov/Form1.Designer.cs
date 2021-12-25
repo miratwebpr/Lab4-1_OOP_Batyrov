@@ -78,6 +78,7 @@ namespace Lab4_1_OOP_Batyrov
             this.triangleBut.Size = new System.Drawing.Size(70, 54);
             this.triangleBut.TabIndex = 4;
             this.triangleBut.UseVisualStyleBackColor = true;
+            this.triangleBut.Click += new System.EventHandler(this.triangleBut_Click);
             // 
             // circleBut
             // 
