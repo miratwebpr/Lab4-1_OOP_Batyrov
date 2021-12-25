@@ -144,7 +144,7 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     if (V[i].checkSelected())
                     {
-                        V[i].moveFigure(0, -5);
+                        V[i].moveFigure(0, -5, sheet);
                     }
                 }
                 G.clearSheet();
@@ -157,7 +157,7 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     if (V[i].checkSelected())
                     {
-                        V[i].moveFigure(0, 5);
+                        V[i].moveFigure(0, 5, sheet);
                     }
                 }
                 G.clearSheet();
@@ -170,7 +170,7 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     if (V[i].checkSelected())
                     {
-                        V[i].moveFigure(-5, 0);
+                        V[i].moveFigure(-5, 0, sheet);
                     }
                 }
                 G.clearSheet();
@@ -183,7 +183,7 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     if (V[i].checkSelected())
                     {
-                        V[i].moveFigure(5, 0);
+                        V[i].moveFigure(5, 0, sheet);
                     }
                 }
                 G.clearSheet();

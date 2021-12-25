@@ -175,6 +175,7 @@ namespace Lab4_1_OOP_Batyrov
         //центр фигуры
         protected int x, y;
         protected bool selected = false;
+        protected int width;
         abstract public bool isCursorIn(int X, int Y);
         abstract public void drawFigure(Graphics gr);
         abstract public void drawSelectedFigure(Graphics gr);
@@ -194,7 +195,7 @@ namespace Lab4_1_OOP_Batyrov
                 return true;
             return false;
         }
-        virtual public void moveFigure(int addX, int addY)
+        virtual public void moveFigure(int addX, int addY, PictureBox sheet)
         {
             x += addX;
             y += addY;
@@ -214,14 +215,10 @@ namespace Lab4_1_OOP_Batyrov
         }
         public override void drawFigure(Graphics gr)
         {
-            PointF point;
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
-            Font fo = new Font("Arial", 15);
-            Brush br = Brushes.Black; 
             gr.FillEllipse(Brushes.White, (x - R), (y - R), 2 * R, 2 * R);
             gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
-            point = new PointF(x - 9, y - 9);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -235,6 +232,17 @@ namespace Lab4_1_OOP_Batyrov
         public override void reduceFigure(int minusR)
         {
             R -= minusR;
+        }
+        public override void moveFigure(int addX, int addY, PictureBox sheet)
+        {
+            if(addX != 0 && (x + addX > 20 || addX > 0) && (x + addX < sheet.Width - 20 || addX < 0))
+            {
+                x += addX;
+            }
+            else if(addY != 0 && (y + addY > 20 || addX > 0) && (y + addY < sheet.Height - 20 || addY < 0))
+            {
+                y += addY;
+            }
         }
 
     }
@@ -265,6 +273,7 @@ namespace Lab4_1_OOP_Batyrov
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
             gr.DrawPolygon(blackPen, points);
+            gr.FillPolygon(Brushes.White, points);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -284,21 +293,20 @@ namespace Lab4_1_OOP_Batyrov
             points[1].X += minusN;
             points[2].X -= minusN;
         }
-        public override void moveFigure(int addX, int addY)
+        public override void moveFigure(int addX, int addY, PictureBox sheet)
         {
-            
             int tempX = x - points[1].X;
             int tempY0 = y - points[0].Y;
             int tempY1 = y - points[1].Y;
-            x += addX;
+            if((points[1].X - 10 >= 0 || addX > 0) && (points[2].X <= sheet.Width - 10 || addX < 0)) x += addX;
             y += addY;
-            if (addX != 0)
+            if (addX != 0 )
             {
                 points[0].X = x;
                 points[1].X = x - tempX;
                 points[2].X = x + tempX;
             }
-            else
+            else if((points[0].Y - 10 >= 0 || addY > 0) && (points[1].Y <= sheet.Height - 10 || addY < 0))
             {
                 points[0].Y = y - tempY0;
                 points[1].Y = y - tempY1;
