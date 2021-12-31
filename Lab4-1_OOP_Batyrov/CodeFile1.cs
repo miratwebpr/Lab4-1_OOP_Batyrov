@@ -13,7 +13,6 @@ namespace Lab4_1_OOP_Batyrov
 {
     class Node<T>
     {
-
         internal Node<T> next;
         internal Node<T> prev;
         internal T Obj;
@@ -170,7 +169,7 @@ namespace Lab4_1_OOP_Batyrov
             return endIter;
         }
     }
-    abstract class geoFigures
+    abstract class geoFigure
     {
         //центр фигуры
         protected int x, y;
@@ -206,7 +205,7 @@ namespace Lab4_1_OOP_Batyrov
             myBrush = newBrush;
         }
     }
-    class Circle : geoFigures
+    class Circle : geoFigure
     {
         private int R = 20;
         public Circle(int x, int y)
@@ -252,7 +251,7 @@ namespace Lab4_1_OOP_Batyrov
         }
 
     }
-    class Triangle : geoFigures
+    class Triangle : geoFigure
     {
         Point[] points = new Point[3];
 
@@ -321,7 +320,7 @@ namespace Lab4_1_OOP_Batyrov
             }    
         }
     }
-    class Rectangle : geoFigures
+    class Rectangle : geoFigure
     {
         int width;
         int height;
@@ -383,31 +382,17 @@ namespace Lab4_1_OOP_Batyrov
             }
         }
     }
+    
+    
     class DrawGraph
     {
         Bitmap bitmap;
-        Pen blackPen;
-        Pen redPen;
-        Pen darkGoldPen;
         Graphics gr;
-        Font fo;
-        Brush br;
-        public int R = 20; //радиус окружности вершины
-
         public DrawGraph(int width, int height)
         {
             bitmap = new Bitmap(width, height);
             gr = Graphics.FromImage(bitmap);
             clearSheet();
-            blackPen = new Pen(Color.Black);
-            blackPen.Width = 2;
-            redPen = new Pen(Color.Red);
-            redPen.Width = 2;
-            darkGoldPen = new Pen(Color.DarkGoldenrod);
-            darkGoldPen.Width = 4;
-            darkGoldPen.EndCap = LineCap.ArrowAnchor;
-            fo = new Font("Arial", 15);
-            br = Brushes.Black;
         }
 
         public Bitmap GetBitmap()
@@ -423,7 +408,7 @@ namespace Lab4_1_OOP_Batyrov
             gr.Clear(Color.White);
         }
 
-        public void drawALLGraph(Storage<geoFigures> V)
+        public void drawALLGraph(Storage<geoFigure> V)
         {
             //рисуем вершины
             for (int i = 0; i < V.getCount(); i++)
@@ -431,14 +416,14 @@ namespace Lab4_1_OOP_Batyrov
                 V[i].drawFigure(gr);
             }
         }
-        public void unSelectAll(Storage<geoFigures> V)
+        public void unSelectAll(Storage<geoFigure> V)
         {
             for(int i = 0; i < V.getCount(); i++)
             {
                 V[i].unSelect();
             }
         }
-        public void erasePicked(Storage<geoFigures> V)
+        public void erasePicked(Storage<geoFigure> V)
         {
             for (int i = 0; i < V.getCount();)
             {

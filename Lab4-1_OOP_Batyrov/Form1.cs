@@ -14,13 +14,13 @@ namespace Lab4_1_OOP_Batyrov
     public partial class Form1 : Form
     {
         DrawGraph G;
-        Storage<geoFigures> V;
+        Storage<geoFigure> V;
         int selected1;
         bool isCtrl = false;
         public Form1()
         {
             InitializeComponent();
-            V = new Storage<geoFigures>();
+            V = new Storage<geoFigure>();
             G = new DrawGraph(sheet.Width, sheet.Height);
         }
         private void sheet_MouseClick(object sender, MouseEventArgs e)
@@ -265,6 +265,7 @@ namespace Lab4_1_OOP_Batyrov
             G.clearSheet();
             G.drawALLGraph(V);
             sheet.Image = G.GetBitmap();
+            colorBut.Enabled = true;
         }
     }
 }
