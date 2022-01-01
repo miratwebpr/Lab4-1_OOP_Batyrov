@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Lab4_1_OOP_Batyrov
 {
-    class Node<T>
+     class Node<T>
     {
         internal Node<T> next;
         internal Node<T> prev;
@@ -169,7 +169,7 @@ namespace Lab4_1_OOP_Batyrov
             return endIter;
         }
     }
-    abstract class geoFigure
+    abstract class GeoFigure
     {
         //центр фигуры
         protected int x, y;
@@ -180,15 +180,15 @@ namespace Lab4_1_OOP_Batyrov
         abstract public void drawSelectedFigure(Graphics gr);
         abstract public void enlargeFigure(int addN);
         abstract public void reduceFigure(int minusN);
-        public void select()
+        virtual public void select()
         {
             selected = true;
         }
-        public void unSelect()
+        virtual public void unSelect()
         {
             selected = false;
         }
-        public bool checkSelected()
+        virtual public bool checkSelected()
         {
             if (selected)
                 return true;
@@ -199,13 +199,129 @@ namespace Lab4_1_OOP_Batyrov
             x += addX;
             y += addY;
         }
-        public void changeColor(Color color)
+        virtual public void changeColor(Color color)
         {
             Brush newBrush = new SolidBrush(color); 
             myBrush = newBrush;
         }
+        abstract public bool isAbleToMove(int addX, int addY, PictureBox sheet);
+        
     }
-    class Circle : geoFigure
+    class Group : GeoFigure
+    {
+        private int maxCount;
+        private int count;
+        private GeoFigure [] figures;
+        public Group(int maxCount)
+        {
+            this.maxCount = maxCount;
+            count = 0;
+            figures = new GeoFigure[maxCount];
+        }
+        public override void select()
+        {
+            for(int i = 0; i < count; i++)
+            {
+                figures[i].select();
+            }
+            selected = true;
+        }
+        public override void unSelect()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                figures[i].unSelect();
+            }
+            selected = false;
+        }
+        public void addFigure(GeoFigure newFigure)
+        {
+            if(count >= maxCount)
+                return;
+            count++;
+            figures[count - 1] = newFigure;
+        }
+        public GeoFigure[] getFigures()
+        {
+            return figures;
+        }
+        public int getCount()
+        {
+            return count;
+        }
+        public override bool isAbleToMove(int addX, int addY, PictureBox sheet)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (figures[i].isAbleToMove(addX, addY, sheet) == false)
+                    return false;
+            }
+            return true;
+        }
+        public override void moveFigure(int addX, int addY, PictureBox sheet)
+        {
+            if (this.isAbleToMove(addX, addY, sheet) == false) 
+                return;
+            for(int i = 0; i < count; i++)
+            {
+                figures[i].moveFigure(addX, addY, sheet);
+            }
+        }
+        public override bool isCursorIn(int x, int y)
+        {
+            for(int i = 0; i < count; i++)
+            {
+                if(figures[i].isCursorIn(x, y))
+                    return true;
+            }
+            return false;
+        }
+        public override void drawFigure(Graphics gr)
+        {
+            for(int i = 0; i < count; i++)
+            {
+                figures[i].drawFigure(gr);
+            }
+        }
+        public override void drawSelectedFigure(Graphics gr)
+        {
+            for(int i = 0; i < count; i++)
+            {
+                figures[i].drawSelectedFigure(gr);
+            }
+        }
+        public override void enlargeFigure(int addN)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                figures[i].enlargeFigure(addN);
+            }
+        }
+        public override void reduceFigure(int minusN)
+        {
+            for(int i = 0; i < count; i++)
+            {
+                figures[i].reduceFigure(minusN);
+            }
+        }
+        public override void changeColor(Color color)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                figures[i].changeColor(color);
+            }
+        }
+        public override bool checkSelected()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if(figures[i].checkSelected() == false)
+                    return false;
+            }
+            return true;
+        }
+    }
+    class Circle : GeoFigure
     {
         private int R = 20;
         public Circle(int x, int y)
@@ -222,8 +338,9 @@ namespace Lab4_1_OOP_Batyrov
         {
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
-            gr.FillEllipse(myBrush, (x - R), (y - R), 2 * R, 2 * R);
-            gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
+            gr.FillEllipse(myBrush, (x - R), (y - R), 2 * R, 2 * R);   
+            if (selected == true) drawSelectedFigure(gr);
+            else gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -238,6 +355,18 @@ namespace Lab4_1_OOP_Batyrov
         {
             R -= minusR;
         }
+        public override bool isAbleToMove(int addX, int addY, PictureBox sheet)
+        {
+            if (addX != 0 && (x + addX > 20 || addX > 0) && (x + addX < sheet.Width - 20 || addX < 0))
+            {
+                return true;
+            }
+            else if (addY != 0 && (y + addY > 20 || addX > 0) && (y + addY < sheet.Height - 20 || addY < 0))
+            {
+                return true;
+            }
+            return false;
+        }
         public override void moveFigure(int addX, int addY, PictureBox sheet)
         {
             if(addX != 0 && (x + addX > 20 || addX > 0) && (x + addX < sheet.Width - 20 || addX < 0))
@@ -251,7 +380,7 @@ namespace Lab4_1_OOP_Batyrov
         }
 
     }
-    class Triangle : geoFigure
+    class Triangle : GeoFigure
     {
         Point[] points = new Point[3];
 
@@ -259,9 +388,15 @@ namespace Lab4_1_OOP_Batyrov
         {
             this.x = x;
             this.y = y;
-            points[0].X = x; points[0].Y = y - 40;
-            points[1].X = x - 20; points[1].Y = y + 10;
-            points[2].X = x + 20; points[2].Y = y + 10;
+            points[0].X = x;
+            points[0].Y = y - 40;
+
+            points[1].X = x - 20;
+            points[1].Y = y + 20;
+
+            points[2].X = x + 20;
+            points[2].Y = y + 20;
+
             myBrush = Brushes.White;
         }
         public override bool isCursorIn(int X, int Y)
@@ -278,8 +413,9 @@ namespace Lab4_1_OOP_Batyrov
         {
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
-            gr.DrawPolygon(blackPen, points);
             gr.FillPolygon(myBrush, points);
+            if (selected == true) drawSelectedFigure(gr);
+            else gr.DrawPolygon(blackPen, points);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -299,12 +435,21 @@ namespace Lab4_1_OOP_Batyrov
             points[1].X += minusN;
             points[2].X -= minusN;
         }
+        public override bool isAbleToMove(int addX, int addY, PictureBox sheet)
+        {
+            if (addX != 0 && (points[1].X - 10 >= 0 || addX > 0) && (points[2].X <= sheet.Width - 10 || addX < 0))
+                return true;
+            else if (addY != 0 && (points[0].Y - 10 >= 0 || addY > 0) && (points[1].Y <= sheet.Height - 10 || addY < 0))
+                return true;
+            return false;
+        }
         public override void moveFigure(int addX, int addY, PictureBox sheet)
         {
             int tempX = x - points[1].X;
             int tempY0 = y - points[0].Y;
             int tempY1 = y - points[1].Y;
-            if((points[1].X - 10 >= 0 || addX > 0) && (points[2].X <= sheet.Width - 10 || addX < 0)) x += addX;
+            if((points[1].X - 10 >= 0 || addX > 0) && (points[2].X <= sheet.Width - 10 || addX < 0))
+                x += addX;
             y += addY;
             if (addX != 0 )
             {
@@ -320,7 +465,7 @@ namespace Lab4_1_OOP_Batyrov
             }    
         }
     }
-    class Rectangle : geoFigure
+    class Rectangle : GeoFigure
     {
         int width;
         int height;
@@ -345,8 +490,9 @@ namespace Lab4_1_OOP_Batyrov
         {
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
-            gr.DrawRectangle(blackPen, leftUpAngle.X, leftUpAngle.Y, width, height);
             gr.FillRectangle(myBrush, leftUpAngle.X, leftUpAngle.Y, width, height);
+            if (selected == true) drawSelectedFigure(gr);
+            else gr.DrawRectangle(blackPen, leftUpAngle.X, leftUpAngle.Y, width, height); 
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -367,6 +513,18 @@ namespace Lab4_1_OOP_Batyrov
             height -= minusN;
             leftUpAngle.X = x - width / 2;
             leftUpAngle.Y = y - height / 2;
+        }
+        public override bool isAbleToMove(int addX, int addY, PictureBox sheet)
+        {
+            if (addX != 0 && (x - width / 2 + addX > 20 || addX > 0) && (x + width / 2 + addX < sheet.Width - 20 || addX < 0))
+            {
+                return true;
+            }
+            else if (addY != 0 && (y - height / 2 + addY > 20 || addX > 0) && (y + height / 2 + addY < sheet.Height - 20 || addY < 0))
+            {
+                return true;
+            }
+            return false;
         }
         public override void moveFigure(int addX, int addY, PictureBox sheet)
         {
@@ -408,7 +566,7 @@ namespace Lab4_1_OOP_Batyrov
             gr.Clear(Color.White);
         }
 
-        public void drawALLGraph(Storage<geoFigure> V)
+        public void drawALLGraph(Storage<GeoFigure> V)
         {
             //рисуем вершины
             for (int i = 0; i < V.getCount(); i++)
@@ -416,14 +574,14 @@ namespace Lab4_1_OOP_Batyrov
                 V[i].drawFigure(gr);
             }
         }
-        public void unSelectAll(Storage<geoFigure> V)
+        public void unSelectAll(Storage<GeoFigure> V)
         {
             for(int i = 0; i < V.getCount(); i++)
             {
                 V[i].unSelect();
             }
         }
-        public void erasePicked(Storage<geoFigure> V)
+        public void erasePicked(Storage<GeoFigure> V)
         {
             for (int i = 0; i < V.getCount();)
             {

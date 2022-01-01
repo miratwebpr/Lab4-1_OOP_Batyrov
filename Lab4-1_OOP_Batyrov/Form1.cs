@@ -14,13 +14,14 @@ namespace Lab4_1_OOP_Batyrov
     public partial class Form1 : Form
     {
         DrawGraph G;
-        Storage<geoFigure> V;
+        Storage<GeoFigure> V;
         int selected1;
         bool isCtrl = false;
+        bool DEBUG = true;
         public Form1()
         {
             InitializeComponent();
-            V = new Storage<geoFigure>();
+            V = new Storage<GeoFigure>();
             G = new DrawGraph(sheet.Width, sheet.Height);
         }
         private void sheet_MouseClick(object sender, MouseEventArgs e)
@@ -29,28 +30,23 @@ namespace Lab4_1_OOP_Batyrov
             {
                 if (isCtrl == false)
                 {
+                    G.unSelectAll(V);
                     for (int i = 0; i < V.getCount(); i++)
                     {
                         if (V[i].isCursorIn(e.X, e.Y))
                         {
-                            if (selected1 != -1)
-                            {
-                                selected1 = -1;
-                                G.unSelectAll(V);
-                                G.clearSheet();
-                                G.drawALLGraph(V);
-                                sheet.Image = G.GetBitmap();
-                            }
-                            if (selected1 == -1)
-                            {
-                                V[i].select();
-                                V[i].drawSelectedFigure(G.getGraphics());
-                                selected1 = i;
-                                sheet.Image = G.GetBitmap();
-                                break;
-                            }
+                            if (V[i] is Group && unGroupBut.Enabled == false)
+                                unGroupBut.Enabled = true;
+                            V[i].select();
+                            V[i].drawSelectedFigure(G.getGraphics());
+                            if (groupBut.Enabled == false)
+                                groupBut.Enabled = true;
+                            break;
                         }
                     }
+                    G.clearSheet();
+                    G.drawALLGraph(V);
+                    sheet.Image = G.GetBitmap();
                 }
                 else
                 {
@@ -58,9 +54,12 @@ namespace Lab4_1_OOP_Batyrov
                     {
                         if (V[i].isCursorIn(e.X, e.Y))
                         {
+                            if (V[i] is Group && unGroupBut.Enabled == false)
+                                unGroupBut.Enabled = true;
                             V[i].drawSelectedFigure(G.getGraphics());
                             V[i].select();
-                            selected1 = i;
+                            if (groupBut.Enabled == false)
+                                groupBut.Enabled = true;
                             sheet.Image = G.GetBitmap();
                             break;
                         }
@@ -100,6 +99,9 @@ namespace Lab4_1_OOP_Batyrov
                 sheet.Image = G.GetBitmap();
                 V[V.getCount() - 1].drawSelectedFigure(G.getGraphics());
             }
+            G.clearSheet();
+            G.drawALLGraph(V);
+            sheet.Image = G.GetBitmap();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -116,7 +118,7 @@ namespace Lab4_1_OOP_Batyrov
                 G.drawALLGraph(V);
                 sheet.Image = G.GetBitmap();
             }
-            if(e.KeyCode == Keys.PageUp)
+            if(e.KeyCode == Keys.PageUp || e.KeyCode == Keys.I)
             {
                 if(cursorBut.Enabled == false)
                 {
@@ -132,7 +134,7 @@ namespace Lab4_1_OOP_Batyrov
                     sheet.Image = G.GetBitmap();
                 }
             }
-            if (e.KeyCode == Keys.PageDown)
+            if (e.KeyCode == Keys.PageDown || e.KeyCode == Keys.K)
             {
                 if (cursorBut.Enabled == false)
                 {
@@ -266,6 +268,70 @@ namespace Lab4_1_OOP_Batyrov
             G.drawALLGraph(V);
             sheet.Image = G.GetBitmap();
             colorBut.Enabled = true;
+        }
+
+        private void groupBut_Click(object sender, EventArgs e)
+        {
+            int cnt_selected = 0;
+            for(int i = 0; i < V.getCount(); i++)
+            {
+                if (V[i].checkSelected()) 
+                    cnt_selected++;
+            }
+            if (cnt_selected == 0)
+                return;
+            Group newGroup = new Group(cnt_selected);
+            for (int i = 0; i < V.getCount();)
+            {
+                if (V[i].checkSelected())
+                {
+                    newGroup.addFigure(V[i]);
+                    V.getObjectAndDel(i);
+                    if (DEBUG == true)
+                        Console.WriteLine("figure " + i + "pushed in group from list");
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            if(DEBUG == true)
+                Console.WriteLine("Grouped figures\n");
+            V.pushBack(newGroup);
+            G.clearSheet();
+            G.drawALLGraph(V);
+            sheet.Image = G.GetBitmap();
+            groupBut.Enabled = false;
+        }
+
+        private void unGroupBut_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < V.getCount();)
+            {
+                if(V[i].checkSelected() == true && V[i] is Group)
+                {
+                    var figures = (V[i] as Group).getFigures();
+                    for(int j = 0; j < figures.Length; j++)
+                    {
+                        V.pushBack(figures[j]);
+                        if (DEBUG == true)
+                            Console.WriteLine("figure " + j + "pushed in list");
+                    }
+                    V.getObjectAndDel(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            if (DEBUG == true)
+                Console.WriteLine("unGrouped figures\n");
+            G.unSelectAll(V);
+            G.clearSheet();
+            G.drawALLGraph(V);
+            sheet.Image = G.GetBitmap();
+            groupBut.Enabled = false;
+            unGroupBut.Enabled = false;
         }
     }
 }
