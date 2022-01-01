@@ -241,8 +241,13 @@ namespace Lab4_1_OOP_Batyrov
             count++;
             figures[count - 1] = newFigure;
         }
-        public void removeFigure()
+        public GeoFigure[] getFigures()
         {
+            return figures;
+        }
+        public int getCount()
+        {
+            return count;
         }
         public override bool isAbleToMove(int addX, int addY, PictureBox sheet)
         {

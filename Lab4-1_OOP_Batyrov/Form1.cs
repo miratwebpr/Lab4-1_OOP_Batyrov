@@ -17,6 +17,7 @@ namespace Lab4_1_OOP_Batyrov
         Storage<GeoFigure> V;
         int selected1;
         bool isCtrl = false;
+        bool DEBUG = true;
         public Form1()
         {
             InitializeComponent();
@@ -34,8 +35,12 @@ namespace Lab4_1_OOP_Batyrov
                     {
                         if (V[i].isCursorIn(e.X, e.Y))
                         {
+                            if (V[i] is Group && unGroupBut.Enabled == false)
+                                unGroupBut.Enabled = true;
                             V[i].select();
                             V[i].drawSelectedFigure(G.getGraphics());
+                            if (groupBut.Enabled == false)
+                                groupBut.Enabled = true;
                             break;
                         }
                     }
@@ -49,9 +54,12 @@ namespace Lab4_1_OOP_Batyrov
                     {
                         if (V[i].isCursorIn(e.X, e.Y))
                         {
+                            if (V[i] is Group && unGroupBut.Enabled == false)
+                                unGroupBut.Enabled = true;
                             V[i].drawSelectedFigure(G.getGraphics());
                             V[i].select();
-                            selected1 = i;
+                            if (groupBut.Enabled == false)
+                                groupBut.Enabled = true;
                             sheet.Image = G.GetBitmap();
                             break;
                         }
@@ -279,30 +287,51 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     newGroup.addFigure(V[i]);
                     V.getObjectAndDel(i);
+                    if (DEBUG == true)
+                        Console.WriteLine("figure " + i + "pushed in group from list");
                 }
                 else
                 {
                     i++;
                 }
             }
+            if(DEBUG == true)
+                Console.WriteLine("Grouped figures\n");
             V.pushBack(newGroup);
-            G.unSelectAll(V);
             G.clearSheet();
             G.drawALLGraph(V);
             sheet.Image = G.GetBitmap();
+            groupBut.Enabled = false;
         }
 
         private void unGroupBut_Click(object sender, EventArgs e)
         {
-            int cnt_selected = 0;
-            for (int i = 0; i < V.getCount(); i++)
+            for (int i = 0; i < V.getCount();)
             {
-                if (V[i].checkSelected())
-                    cnt_selected++;
+                if(V[i].checkSelected() == true && V[i] is Group)
+                {
+                    var figures = (V[i] as Group).getFigures();
+                    for(int j = 0; j < figures.Length; j++)
+                    {
+                        V.pushBack(figures[j]);
+                        if (DEBUG == true)
+                            Console.WriteLine("figure " + j + "pushed in list");
+                    }
+                    V.getObjectAndDel(i);
+                }
+                else
+                {
+                    i++;
+                }
             }
-            if (cnt_selected == 0)
-                return;
-
+            if (DEBUG == true)
+                Console.WriteLine("unGrouped figures\n");
+            G.unSelectAll(V);
+            G.clearSheet();
+            G.drawALLGraph(V);
+            sheet.Image = G.GetBitmap();
+            groupBut.Enabled = false;
+            unGroupBut.Enabled = false;
         }
     }
 }

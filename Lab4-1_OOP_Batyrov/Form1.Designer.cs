@@ -123,6 +123,7 @@ namespace Lab4_1_OOP_Batyrov
             // 
             // groupBut
             // 
+            this.groupBut.Enabled = false;
             this.groupBut.Location = new System.Drawing.Point(1078, 529);
             this.groupBut.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBut.Name = "groupBut";
@@ -134,6 +135,7 @@ namespace Lab4_1_OOP_Batyrov
             // 
             // unGroupBut
             // 
+            this.unGroupBut.Enabled = false;
             this.unGroupBut.Location = new System.Drawing.Point(1078, 614);
             this.unGroupBut.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.unGroupBut.Name = "unGroupBut";
