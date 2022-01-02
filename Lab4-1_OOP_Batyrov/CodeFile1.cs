@@ -540,7 +540,10 @@ namespace Lab4_1_OOP_Batyrov
             }
         }
     }
-    
+    abstract class FiguresFactory
+    {
+        public abstract GeoFigure createFigure(); 
+    }
     
     class DrawGraph
     {
