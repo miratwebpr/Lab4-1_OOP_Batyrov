@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
 
 namespace Lab4_1_OOP_Batyrov
 {
@@ -540,9 +541,47 @@ namespace Lab4_1_OOP_Batyrov
             }
         }
     }
-    abstract class FiguresFactory
+    abstract class AbstractFactory
     {
-        public abstract GeoFigure createFigure(); 
+        public Type createObj(string type)
+        {
+            Type newType = Type.GetType((type), false);
+            return newType;
+        } 
+    }
+    class FiguresFactory : AbstractFactory
+    {
+        public void load(Storage<GeoFigure> myStorage)
+        {
+            if (File.Exists("text.txt"))
+            {
+                StreamReader sr = new StreamReader("text.txt");
+                int cnt = Convert.ToInt32(sr.ReadLine());
+                for (int i = 0; i < cnt; i++)
+                {//Type.GetConstructor
+                    
+                    Type T = createObj(sr.ReadLine());
+                    var gavno = T.GetConstructor(T);
+                    Console.WriteLine(T);
+                    
+                   // GeoFigure newFigure = new T();
+                   // myStorage.pushBack(newFigure);
+                }
+                sr.Close();
+            }
+        }
+        public void save(Storage<GeoFigure> myStorage)
+        {
+            if (File.Exists("text.txt"))
+                File.Delete("Text.txt");
+            StreamWriter sw = new StreamWriter("text.txt");
+            sw.WriteLine(myStorage.getCount().ToString());
+            for (int i = 0; i < myStorage.getCount(); i++)
+            {
+                sw.WriteLine(myStorage[i].GetType().ToString());
+            }
+            sw.Close();
+        }
     }
     
     class DrawGraph
