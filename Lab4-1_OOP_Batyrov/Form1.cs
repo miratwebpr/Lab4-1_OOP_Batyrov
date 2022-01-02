@@ -15,7 +15,6 @@ namespace Lab4_1_OOP_Batyrov
     {
         DrawGraph G;
         Storage<GeoFigure> V;
-        int selected1;
         bool isCtrl = false;
         bool DEBUG = true;
         public Form1()
