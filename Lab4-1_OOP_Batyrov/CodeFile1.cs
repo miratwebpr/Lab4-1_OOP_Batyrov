@@ -543,10 +543,12 @@ namespace Lab4_1_OOP_Batyrov
     }
     abstract class AbstractFactory
     {
-        public Type createObj(string type)
+        public object createObj(string type)
         {
             Type newType = Type.GetType((type), false);
-            return newType;
+            object newObject = newType.GetConstructors().Invoke();
+
+            return newObject;
         } 
     }
     class FiguresFactory : AbstractFactory
@@ -559,13 +561,11 @@ namespace Lab4_1_OOP_Batyrov
                 int cnt = Convert.ToInt32(sr.ReadLine());
                 for (int i = 0; i < cnt; i++)
                 {//Type.GetConstructor
-                    
-                    Type T = createObj(sr.ReadLine());
-                    var gavno = T.GetConstructor(T);
-                    Console.WriteLine(T);
+                    GeoFigure newFigure = createObj(sr.ReadLine());
+                    Console.WriteLine(newFigure);
                     
                    // GeoFigure newFigure = new T();
-                   // myStorage.pushBack(newFigure);
+                   myStorage.pushBack(newFigure);
                 }
                 sr.Close();
             }
