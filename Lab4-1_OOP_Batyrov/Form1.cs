@@ -335,14 +335,42 @@ namespace Lab4_1_OOP_Batyrov
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            FiguresFactory F = new FiguresFactory();
+            MyFiguresFactory F = new MyFiguresFactory();
             F.load(V);
+            G.drawALLGraph(V);
+            sheet.Image = G.GetBitmap();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            FiguresFactory F = new FiguresFactory();
+            for (int i = 0; i < V.getCount();)
+            {
+                if (V[i] is Group)
+                {
+                    var figures = (V[i] as Group).getFigures();
+                    for (int j = 0; j < figures.Length; j++)
+                    {
+                        V.pushBack(figures[j]);
+                        if (DEBUG == true)
+                            Console.WriteLine("figure " + j + "pushed in list");
+                    }
+                    V.getObjectAndDel(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            MyFiguresFactory F = new MyFiguresFactory();
             F.save(V);
+        }
+
+        private void delAllBut_Click(object sender, EventArgs e)
+        {
+            V.Clear();
+            G.clearSheet();
+            G.drawALLGraph(V);
+            sheet.Image = G.GetBitmap();
         }
     }
 }
