@@ -176,6 +176,14 @@ namespace Lab4_1_OOP_Batyrov
         protected int x, y;
         protected bool selected = false;
         protected Brush myBrush;
+        public int getX()
+        {
+            return x;
+        }
+        public int getY()
+        {
+            return y;
+        }
         abstract public bool isCursorIn(int X, int Y);
         abstract public void drawFigure(Graphics gr);
         abstract public void drawSelectedFigure(Graphics gr);
@@ -541,19 +549,29 @@ namespace Lab4_1_OOP_Batyrov
             }
         }
     }
-    abstract class AbstractFactory
+    abstract class FiguresFactory
     {
-        /*public object createObj(string type)
-        {
-            Type newType = Type.GetType((type), false);
-            //object newObject = newType.GetConstructors().Invoke();
-
-            //return newObject;
-        } 
-        */
+        abstract public GeoFigure createObj(string type, int x, int y);
     }
-    class FiguresFactory : AbstractFactory
+    class MyFiguresFactory : FiguresFactory
     {
+        public override GeoFigure createObj(string type, int x, int y)
+        {
+            GeoFigure Figure = null;
+            switch (type)
+            {
+                case "Lab4_1_OOP_Batyrov.Circle":
+                    Figure = new Circle(x, y);
+                    break;
+                case "Lab4_1_OOP_Batyrov.Triangle":
+                    Figure = new Triangle(x, y);
+                    break;
+                case "Lab4_1_OOP_Batyrov.Rectangle":
+                    Figure = new Rectangle(x, y);
+                    break;
+            }
+            return Figure;
+        }
         public void load(Storage<GeoFigure> myStorage)
         {
             if (File.Exists("text.txt"))
@@ -561,12 +579,13 @@ namespace Lab4_1_OOP_Batyrov
                 StreamReader sr = new StreamReader("text.txt");
                 int cnt = Convert.ToInt32(sr.ReadLine());
                 for (int i = 0; i < cnt; i++)
-                {//Type.GetConstructor
-                    GeoFigure newFigure = createObj(sr.ReadLine());
-                    Console.WriteLine(newFigure);
-                    
-                   // GeoFigure newFigure = new T();
-                   myStorage.pushBack(newFigure);
+                {
+                    string type = sr.ReadLine();
+                    int x = Convert.ToInt32(sr.ReadLine());
+                    int y = Convert.ToInt32(sr.ReadLine());
+                    GeoFigure newFigure = createObj(type, x, y);
+                    if(newFigure != null) 
+                        myStorage.pushBack(newFigure);
                 }
                 sr.Close();
             }
@@ -579,7 +598,9 @@ namespace Lab4_1_OOP_Batyrov
             sw.WriteLine(myStorage.getCount().ToString());
             for (int i = 0; i < myStorage.getCount(); i++)
             {
-                sw.WriteLine(myStorage[i].GetType().ToString());
+                sw.WriteLine(myStorage[i].GetType());
+                sw.WriteLine(myStorage[i].getX());
+                sw.WriteLine(myStorage[i].getY());
             }
             sw.Close();
         }
@@ -613,7 +634,7 @@ namespace Lab4_1_OOP_Batyrov
         {
             //рисуем вершины
             for (int i = 0; i < V.getCount(); i++)
-            {
+            { 
                 V[i].drawFigure(gr);
             }
         }
