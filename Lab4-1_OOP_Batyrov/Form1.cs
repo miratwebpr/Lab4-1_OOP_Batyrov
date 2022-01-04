@@ -332,5 +332,17 @@ namespace Lab4_1_OOP_Batyrov
             groupBut.Enabled = false;
             unGroupBut.Enabled = false;
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            FiguresFactory F = new FiguresFactory();
+            F.load(V);
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            FiguresFactory F = new FiguresFactory();
+            F.save(V);
+        }
     }
 }
