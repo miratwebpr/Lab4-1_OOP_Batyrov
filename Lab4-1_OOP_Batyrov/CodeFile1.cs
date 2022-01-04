@@ -546,7 +546,7 @@ namespace Lab4_1_OOP_Batyrov
         public object createObj(string type)
         {
             Type newType = Type.GetType((type), false);
-            object newObject = newType.GetConstructors().Invoke();
+            //object newObject = newType.GetConstructors().Invoke();
 
             return newObject;
         } 
