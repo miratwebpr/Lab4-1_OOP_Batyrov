@@ -543,13 +543,14 @@ namespace Lab4_1_OOP_Batyrov
     }
     abstract class AbstractFactory
     {
-        public object createObj(string type)
+        /*public object createObj(string type)
         {
             Type newType = Type.GetType((type), false);
             //object newObject = newType.GetConstructors().Invoke();
 
-            return newObject;
+            //return newObject;
         } 
+        */
     }
     class FiguresFactory : AbstractFactory
     {
