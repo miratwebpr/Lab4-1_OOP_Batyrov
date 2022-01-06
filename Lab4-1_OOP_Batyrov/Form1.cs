@@ -16,7 +16,7 @@ namespace Lab4_1_OOP_Batyrov
         DrawGraph G;
         Storage<GeoFigure> V;
         bool isCtrl = false;
-        bool DEBUG = true;
+        bool DEBUG = false;
         public Form1()
         {
             InitializeComponent();
@@ -335,6 +335,8 @@ namespace Lab4_1_OOP_Batyrov
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            StorageObserver storageObserver = new StorageObserver(treeView1, V);
+            V.addObserver(storageObserver);
             MyFiguresFactory F = new MyFiguresFactory();
             F.load(V);
             G.drawALLGraph(V);
@@ -369,6 +371,14 @@ namespace Lab4_1_OOP_Batyrov
         {
             V.Clear();
             G.clearSheet();
+            G.drawALLGraph(V);
+            sheet.Image = G.GetBitmap();
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            G.unSelectAll(V);
+            V[e.Node.Index].select();
             G.drawALLGraph(V);
             sheet.Image = G.GetBitmap();
         }

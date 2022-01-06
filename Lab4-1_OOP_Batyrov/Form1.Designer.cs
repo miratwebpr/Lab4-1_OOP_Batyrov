@@ -41,6 +41,7 @@ namespace Lab4_1_OOP_Batyrov
             this.unGroupBut = new System.Windows.Forms.Button();
             this.delAllBut = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.sheet)).BeginInit();
             this.SuspendLayout();
             // 
@@ -100,9 +101,9 @@ namespace Lab4_1_OOP_Batyrov
             // 
             this.sheet.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.sheet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sheet.Location = new System.Drawing.Point(193, 12);
+            this.sheet.Location = new System.Drawing.Point(212, 12);
             this.sheet.Name = "sheet";
-            this.sheet.Size = new System.Drawing.Size(520, 426);
+            this.sheet.Size = new System.Drawing.Size(501, 426);
             this.sheet.TabIndex = 0;
             this.sheet.TabStop = false;
             this.sheet.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sheet_MouseClick);
@@ -140,9 +141,9 @@ namespace Lab4_1_OOP_Batyrov
             // 
             // delAllBut
             // 
-            this.delAllBut.Location = new System.Drawing.Point(295, 438);
+            this.delAllBut.Location = new System.Drawing.Point(295, 442);
             this.delAllBut.Name = "delAllBut";
-            this.delAllBut.Size = new System.Drawing.Size(178, 10);
+            this.delAllBut.Size = new System.Drawing.Size(411, 10);
             this.delAllBut.TabIndex = 9;
             this.delAllBut.Text = "button1";
             this.delAllBut.UseVisualStyleBackColor = true;
@@ -152,14 +153,25 @@ namespace Lab4_1_OOP_Batyrov
             // 
             this.treeView1.Location = new System.Drawing.Point(12, 12);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(175, 426);
+            this.treeView1.Size = new System.Drawing.Size(194, 426);
             this.treeView1.TabIndex = 10;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(209, 441);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(80, 13);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Удалить все->";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(806, 456);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.delAllBut);
             this.Controls.Add(this.unGroupBut);
@@ -198,6 +210,7 @@ namespace Lab4_1_OOP_Batyrov
         private System.Windows.Forms.Button unGroupBut;
         private System.Windows.Forms.Button delAllBut;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

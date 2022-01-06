@@ -12,23 +12,39 @@ using System.Reflection;
 
 namespace Lab4_1_OOP_Batyrov
 {
-     class Node<T>
+    class Node<T>
     {
         internal Node<T> next;
         internal Node<T> prev;
         internal T Obj;
     }
-    class Storage<T>
+    class Storage<T> : Subject
     {
         protected Node<T> first;
         protected Node<T> last;
         protected int count;
-        protected Node<T> iterator;
         public Storage()
         {
             first = null;
             last = null;
             count = 0;
+        }
+        public void subscribeAllFigures()
+        {
+            if(first.Obj is GeoFigure)
+            {
+                Node<T> current = first;
+                for (int i = 0; i < count; i++)
+                {
+                    (current.Obj as GeoFigure).addObserver(subjectObservers[0]);
+                    current = current.next;
+                }
+            }
+        }
+        public void subscribeFigure(T obj)
+        {
+            if (first.Obj is GeoFigure)
+                (obj as GeoFigure).addObserver(subjectObservers[0]);
         }
         public int getCount()
         {
@@ -44,6 +60,8 @@ namespace Lab4_1_OOP_Batyrov
             else first = newNode;
             last = newNode;
             count++;
+            subscribeFigure(newNode.Obj);
+            notifyEveryOne();
         }
         public void pushFront(T newObj)
         {
@@ -55,6 +73,8 @@ namespace Lab4_1_OOP_Batyrov
             else last = newNode;
             first = newNode;
             count++;
+            subscribeFigure(newNode.Obj);
+            notifyEveryOne();
         }
         public T getObject(int index)
         {
@@ -85,6 +105,7 @@ namespace Lab4_1_OOP_Batyrov
                 count = 0;
                 first = null;
                 last = null;
+                notifyEveryOne();
                 return current.Obj;
             }
             if (current == first)
@@ -93,6 +114,7 @@ namespace Lab4_1_OOP_Batyrov
                 AftCurrent.prev = null;
                 first = AftCurrent;
                 count--;
+                notifyEveryOne();
                 return current.Obj;
             }
             else if (current == last)
@@ -101,6 +123,7 @@ namespace Lab4_1_OOP_Batyrov
                 BefCurrent.next = null;
                 last = BefCurrent;
                 count--;
+                notifyEveryOne();
                 return current.Obj;
             }
             else
@@ -110,6 +133,7 @@ namespace Lab4_1_OOP_Batyrov
                 BefCurrent.next = AftCurrent;
                 AftCurrent.prev = BefCurrent;
                 count--;
+                notifyEveryOne();
                 return current.Obj;
             }
         }
@@ -134,8 +158,9 @@ namespace Lab4_1_OOP_Batyrov
             first = null;
             last = null;
             count = 0;
+            notifyEveryOne();
         }
-        class Iterator
+        public class Iterator
         {
             private static Node<T> current;
             public Iterator(Node<T> newCurrent)
@@ -170,7 +195,7 @@ namespace Lab4_1_OOP_Batyrov
             return endIter;
         }
     }
-    abstract class GeoFigure
+    abstract class GeoFigure : Subject
     {
         //центр фигуры
         protected int x, y;
@@ -192,10 +217,12 @@ namespace Lab4_1_OOP_Batyrov
         virtual public void select()
         {
             selected = true;
+            notifyEveryOne();
         }
         virtual public void unSelect()
         {
             selected = false;
+            notifyEveryOne();
         }
         virtual public bool checkSelected()
         {
@@ -214,7 +241,10 @@ namespace Lab4_1_OOP_Batyrov
             myBrush = newBrush;
         }
         abstract public bool isAbleToMove(int addX, int addY, PictureBox sheet);
-        
+        public string getInfo()
+        {
+            return this.GetType().Name + "  X:" + this.x + "  Y:" + this.y;
+        }
     }
     class Group : GeoFigure
     {
@@ -471,7 +501,7 @@ namespace Lab4_1_OOP_Batyrov
                 points[0].Y = y - tempY0;
                 points[1].Y = y - tempY1;
                 points[2].Y = y - tempY1;
-            }    
+            }
         }
     }
     class Rectangle : GeoFigure
@@ -501,7 +531,7 @@ namespace Lab4_1_OOP_Batyrov
             blackPen.Width = 2;
             gr.FillRectangle(myBrush, leftUpAngle.X, leftUpAngle.Y, width, height);
             if (selected == true) drawSelectedFigure(gr);
-            else gr.DrawRectangle(blackPen, leftUpAngle.X, leftUpAngle.Y, width, height); 
+            else gr.DrawRectangle(blackPen, leftUpAngle.X, leftUpAngle.Y, width, height);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -605,7 +635,90 @@ namespace Lab4_1_OOP_Batyrov
             sw.Close();
         }
     }
-    
+    abstract class Observer
+    {
+        public abstract void onSubjectChanged(Subject subject);
+    }
+    class StorageObserver : Observer
+    {
+        TreeView myTreeNode;
+        Storage<GeoFigure> myStorage;
+        public StorageObserver(TreeView tn, Storage <GeoFigure> storage)
+        {
+            myTreeNode = tn;
+            myStorage = storage;
+        }
+        public override void onSubjectChanged(Subject subject)
+        {
+            if(subject is GeoFigure)
+            {
+                if((subject as GeoFigure).checkSelected())
+                {
+                    for (int i = 0; i < myStorage.getCount(); i++)
+                    {
+                        if (myStorage[i] == subject)
+                            myTreeNode.SelectedNode = myTreeNode.Nodes[0].Nodes[i];
+                    }
+                }
+                
+            }
+            else
+                printTree();
+        }
+        public void printTree()
+        {
+            myTreeNode.Nodes.Clear();
+            if(myStorage.getCount() != 0)
+            {
+                myTreeNode.Nodes.Add("Все фигуры в рабочей области");
+                int selectedFigure = 0;
+                for (int i = 0; i < myStorage.getCount(); i++)
+                {
+                    if (myStorage[i].checkSelected())
+                        selectedFigure = i;
+                    processNode(myTreeNode.Nodes[0], myStorage[i]);
+                }
+                myTreeNode.SelectedNode = myTreeNode.Nodes[0].Nodes[selectedFigure];
+            }
+            myTreeNode.ExpandAll();
+        }
+        public void processNode(TreeNode tn, Subject subject)
+        {
+            if(subject is Group && (subject as Group).getFigures().Length != 0)
+            {
+                TreeNode newTreeNode = new TreeNode(subject.GetType().Name);
+                for(int i = 0; i < (subject as Group).getFigures().Length; i++)
+                {
+                    processNode(newTreeNode, (subject as Group).getFigures()[i]);
+                }
+                tn.Nodes.Add(newTreeNode);
+            }
+            else
+            {
+                tn.Nodes.Add((subject as GeoFigure).getInfo());
+            }
+        }
+    }
+    class Subject
+    {
+        protected List <Observer> subjectObservers;
+        public Subject()
+        {
+            subjectObservers = new List<Observer>();
+        }
+        public void addObserver(Observer newObserver)
+        {
+            subjectObservers.Add(newObserver);
+        }
+        public void notifyEveryOne()
+        {
+            for(int i = 0; i < subjectObservers.Count(); i++)
+            {
+                subjectObservers[i].onSubjectChanged(this);
+            }
+        }
+    }
+
     class DrawGraph
     {
         Bitmap bitmap;
@@ -657,6 +770,14 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     i++;
                 }
+            }
+        }
+        public void addStorageObs(Storage<GeoFigure> V, TreeView myTreeView)
+        {
+            StorageObserver newStorageObs = new StorageObserver(myTreeView, V);
+            for (int i = 0; i < V.getCount(); i++)
+            {
+                V[i].addObserver(newStorageObs);
             }
         }
 
