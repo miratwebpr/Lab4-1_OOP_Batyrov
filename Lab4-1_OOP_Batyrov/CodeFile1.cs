@@ -12,23 +12,61 @@ using System.Reflection;
 
 namespace Lab4_1_OOP_Batyrov
 {
-     class Node<T>
+    class Node<T>
     {
         internal Node<T> next;
         internal Node<T> prev;
         internal T Obj;
     }
-    class Storage<T>
+    class Storage<T> : Subject
     {
         protected Node<T> first;
         protected Node<T> last;
         protected int count;
-        protected Node<T> iterator;
         public Storage()
         {
             first = null;
             last = null;
             count = 0;
+        }
+        public void subscribeAllFigures()
+        {
+            if(first.Obj is GeoFigure)
+            {
+                Node<T> current = first;
+                for (int i = 0; i < count; i++)
+                {
+                    for(int j = 0; j < subjectObservers.Count; j++)
+                    {
+                        (current.Obj as GeoFigure).addObserver(subjectObservers[j]);
+                        current = current.next;
+                    }
+                }
+            }
+        }
+        public void subscribeAllFigures(Observer newObs)
+        {
+            if (first.Obj is GeoFigure)
+            {
+                Node<T> current = first;
+                for (int i = 0; i < count; i++)
+                {
+                    (current.Obj as GeoFigure).addObserver(newObs);
+                    current = current.next;
+                }
+            }
+        }
+        public void subscribeFigure(T obj)
+        {
+            
+            if (first.Obj is GeoFigure)
+            {
+                for(int i = 0; i < subjectObservers.Count; i++)
+                {
+                    (obj as GeoFigure).addObserver(subjectObservers[i]);
+                }
+            }
+                
         }
         public int getCount()
         {
@@ -44,6 +82,8 @@ namespace Lab4_1_OOP_Batyrov
             else first = newNode;
             last = newNode;
             count++;
+            subscribeFigure(newNode.Obj);
+            notifyEveryOne();
         }
         public void pushFront(T newObj)
         {
@@ -55,6 +95,8 @@ namespace Lab4_1_OOP_Batyrov
             else last = newNode;
             first = newNode;
             count++;
+            subscribeFigure(newNode.Obj);
+            notifyEveryOne();
         }
         public T getObject(int index)
         {
@@ -85,6 +127,7 @@ namespace Lab4_1_OOP_Batyrov
                 count = 0;
                 first = null;
                 last = null;
+                notifyEveryOne();
                 return current.Obj;
             }
             if (current == first)
@@ -93,6 +136,7 @@ namespace Lab4_1_OOP_Batyrov
                 AftCurrent.prev = null;
                 first = AftCurrent;
                 count--;
+                notifyEveryOne();
                 return current.Obj;
             }
             else if (current == last)
@@ -101,6 +145,7 @@ namespace Lab4_1_OOP_Batyrov
                 BefCurrent.next = null;
                 last = BefCurrent;
                 count--;
+                notifyEveryOne();
                 return current.Obj;
             }
             else
@@ -110,6 +155,7 @@ namespace Lab4_1_OOP_Batyrov
                 BefCurrent.next = AftCurrent;
                 AftCurrent.prev = BefCurrent;
                 count--;
+                notifyEveryOne();
                 return current.Obj;
             }
         }
@@ -134,8 +180,9 @@ namespace Lab4_1_OOP_Batyrov
             first = null;
             last = null;
             count = 0;
+            notifyEveryOne();
         }
-        class Iterator
+        public class Iterator
         {
             private static Node<T> current;
             public Iterator(Node<T> newCurrent)
@@ -170,9 +217,9 @@ namespace Lab4_1_OOP_Batyrov
             return endIter;
         }
     }
-    abstract class GeoFigure
+    abstract class GeoFigure : Subject
     {
-        //центр фигуры
+        public Rectangle frame;
         protected int x, y;
         protected bool selected = false;
         protected Brush myBrush;
@@ -189,13 +236,16 @@ namespace Lab4_1_OOP_Batyrov
         abstract public void drawSelectedFigure(Graphics gr);
         abstract public void enlargeFigure(int addN);
         abstract public void reduceFigure(int minusN);
+        abstract public void findFrame(int X, int Y);
         virtual public void select()
         {
             selected = true;
+            notifyEveryOne();
         }
         virtual public void unSelect()
         {
             selected = false;
+            notifyEveryOne();
         }
         virtual public bool checkSelected()
         {
@@ -214,7 +264,145 @@ namespace Lab4_1_OOP_Batyrov
             myBrush = newBrush;
         }
         abstract public bool isAbleToMove(int addX, int addY, PictureBox sheet);
-        
+        public string getInfo()
+        {
+            return this.GetType().Name + "  X:" + this.x + "  Y:" + this.y;
+        }
+        public bool checkIntersectionOfTwoRectangles(Rectangle r2)
+        {
+            Point[] Frame1Points = frame.getPointsOfRect();
+            Point[] Frame2Points = r2.getPointsOfRect();
+            //Y not intersects
+
+            if (Frame1Points[0].Y > Frame2Points[3].Y || Frame1Points[3].Y < Frame2Points[0].Y)
+            {
+
+                return false;
+
+            }
+            //TODO: Done: Исправить рамку треугольника, она вниз уезжает, а сверху протыкает,
+            // исправить конфликты со storage observerom, т.к. переполнение стекаплюс, при выборе
+            //фигур, нотифается сторэдж обсервер и из за этого скорее всего
+
+            //X not intersects
+
+            if (Frame1Points[3].X < Frame2Points[0].X || Frame1Points[0].X > Frame2Points[3].X)
+            {
+
+                return false;
+
+            }
+
+            return true;
+        }
+        public bool checkIntersectionOfTwoLines(Point p1, Point p2, Point p3, Point p4)
+        {
+            //сначала расставим точки по порядку, т.е. чтобы было p1.x <= p2.x
+            if (p2.X < p1.X)
+            {
+                Point tmp = p1;
+                p1 = p2;
+                p2 = tmp;
+            }
+            //и p3.x <= p4.x
+            if (p4.X < p3.X)
+            {
+                Point tmp = p3;
+                p3 = p4;
+                p4 = tmp;
+            }
+
+            //проверим существование потенциального интервала для точки пересечения отрезков
+            if (p2.X < p3.X)
+            {
+                return false; //ибо у отрезков нету взаимной абсциссы
+            }
+
+            //если оба отрезка вертикальные
+            if ((p1.X - p2.X == 0) && (p3.X - p4.X == 0))
+            {
+
+                //если они лежат на одном X
+                if (p1.X == p3.X)
+                {
+
+                    //проверим пересекаются ли они, т.е. есть ли у них общий Y
+                    //для этого возьмём отрицание от случая, когда они НЕ пересекаются
+                    if (!((Math.Max(p1.Y, p2.Y) < Math.Min(p3.Y, p4.Y)) ||
+                            (Math.Min(p1.Y, p2.Y) > Math.Max(p3.Y, p4.Y))))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            //найдём коэффициенты уравнений, содержащих отрезки
+            //f1(x) = A1*x + b1 = y
+            //f2(x) = A2*x + b2 = y
+
+            //если первый отрезок вертикальный
+            if (p1.X - p2.X == 0)
+            {
+                //найдём Xa, Ya - точки пересечения двух прямых
+                int XA = p1.X;
+                int a2 = (p3.Y - p4.Y) / (p3.X - p4.X);
+                int B2 = p3.Y - a2 * p3.X;
+                int Ya = a2 * XA + B2;
+
+                if (p3.X <= XA && p4.X >= XA && Math.Min(p1.Y, p2.Y) <= Ya &&
+                        Math.Max(p1.Y, p2.Y) >= Ya)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            //если второй отрезок вертикальный
+            if (p3.X - p4.X == 0)
+            {
+
+                //найдём Xa, Ya - точки пересечения двух прямых
+                int XA = p3.X;
+                int a1 = (p1.Y - p2.Y) / (p1.X - p2.Y);
+                int B1 = p1.Y - a1 * p1.Y;
+                int Ya = a1 * XA + B1;
+
+                if (p1.X <= XA && p2.X >= XA && Math.Min(p3.Y, p4.Y) <= Ya &&
+                        Math.Max(p3.Y, p4.Y) >= Ya)
+                {
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            //оба отрезка невертикальные
+            int A1 = (p1.Y - p2.Y) / (p1.X - p2.X);
+            int A2 = (p3.X - p4.X) / (p3.X - p4.X);
+            int b1 = p1.Y - A1 * p1.X;
+            int b2 = p3.Y - A2 * p3.X;
+
+            if (A1 == A2)
+            {
+                return false; //отрезки параллельны
+            }
+
+            //Xa - абсцисса точки пересечения двух прямых
+            int Xa = (b2 - b1) / (A1 - A2);
+
+            if ((Xa < Math.Max(p1.X, p3.X)) || (Xa > Math.Min(p2.X, p4.X)))
+            {
+                return false; //точка Xa находится вне пересечения проекций отрезков на ось X 
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
     class Group : GeoFigure
     {
@@ -227,6 +415,10 @@ namespace Lab4_1_OOP_Batyrov
             count = 0;
             figures = new GeoFigure[maxCount];
         }
+        public override void findFrame(int X, int Y)
+        {
+            return;
+        }
         public override void select()
         {
             for(int i = 0; i < count; i++)
@@ -234,6 +426,7 @@ namespace Lab4_1_OOP_Batyrov
                 figures[i].select();
             }
             selected = true;
+            notifyEveryOne();
         }
         public override void unSelect()
         {
@@ -242,6 +435,7 @@ namespace Lab4_1_OOP_Batyrov
                 figures[i].unSelect();
             }
             selected = false;
+            notifyEveryOne();
         }
         public void addFigure(GeoFigure newFigure)
         {
@@ -332,12 +526,20 @@ namespace Lab4_1_OOP_Batyrov
     }
     class Circle : GeoFigure
     {
-        private int R = 20;
+        private int R;
         public Circle(int x, int y)
         {
             this.x = x;
             this.y = y;
+            R = 20;
             myBrush = Brushes.White;
+            findFrame(x, y);
+        }
+        public override void findFrame(int X, int Y)
+        {
+            int width = R * 2;
+            int height = R * 2;
+            frame = new Rectangle(x, y, width, height);
         }
         public override bool isCursorIn(int X, int Y)
         {
@@ -348,8 +550,10 @@ namespace Lab4_1_OOP_Batyrov
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
             gr.FillEllipse(myBrush, (x - R), (y - R), 2 * R, 2 * R);   
-            if (selected == true) drawSelectedFigure(gr);
-            else gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
+            if (selected == true) 
+                drawSelectedFigure(gr);
+            else 
+                gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -358,11 +562,15 @@ namespace Lab4_1_OOP_Batyrov
         }
         public override void enlargeFigure(int addR)
         {
-            R += addR;
+            if(R > 0)
+                R += addR;
+            findFrame(x, y);
         }
         public override void reduceFigure(int minusR)
         {
-            R -= minusR;
+            if (R > 0)
+                R -= minusR;
+            findFrame(x, y);
         }
         public override bool isAbleToMove(int addX, int addY, PictureBox sheet)
         {
@@ -386,6 +594,8 @@ namespace Lab4_1_OOP_Batyrov
             {
                 y += addY;
             }
+            findFrame(x, y);
+            notifyConcrete(subjectObservers[1]);
         }
 
     }
@@ -407,6 +617,13 @@ namespace Lab4_1_OOP_Batyrov
             points[2].Y = y + 20;
 
             myBrush = Brushes.White;
+            findFrame(x, y);
+        }
+        public override void findFrame(int X, int Y)
+        {
+            int width = points[2].X - points[1].X;
+            int height = points[1].Y - points[0].Y;
+            frame = new Rectangle(x, y - 12, width, height);
         }
         public override bool isCursorIn(int X, int Y)
         {
@@ -423,8 +640,11 @@ namespace Lab4_1_OOP_Batyrov
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
             gr.FillPolygon(myBrush, points);
-            if (selected == true) drawSelectedFigure(gr);
-            else gr.DrawPolygon(blackPen, points);
+            if (selected == true) 
+                drawSelectedFigure(gr);
+            else 
+                gr.DrawPolygon(blackPen, points);
+            //gr.DrawRectangle(blackPen, frame.leftUpAngle.X, frame.leftUpAngle.Y, frame.width, frame.height);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -437,12 +657,14 @@ namespace Lab4_1_OOP_Batyrov
             points[0].Y -= addN;
             points[1].X -= addN;
             points[2].X += addN;
+            findFrame(x, y);
         }
         public override void reduceFigure(int minusN)
         {
             points[0].Y += minusN;
             points[1].X += minusN;
             points[2].X -= minusN;
+            findFrame(x, y);
         }
         public override bool isAbleToMove(int addX, int addY, PictureBox sheet)
         {
@@ -471,14 +693,16 @@ namespace Lab4_1_OOP_Batyrov
                 points[0].Y = y - tempY0;
                 points[1].Y = y - tempY1;
                 points[2].Y = y - tempY1;
-            }    
+            }
+            findFrame(x, y);
+            notifyConcrete(subjectObservers[1]);
         }
     }
     class Rectangle : GeoFigure
     {
-        int width;
-        int height;
-        Point leftUpAngle = new Point();
+        public int width;
+        public int height;
+        public Point leftUpAngle = new Point();
         public Rectangle(int x, int y)
         {
             this.x = x;
@@ -488,6 +712,33 @@ namespace Lab4_1_OOP_Batyrov
             leftUpAngle.X = x - width / 2;
             leftUpAngle.Y = y - height / 2;
             myBrush = Brushes.White;
+            frame = this;
+        }
+        public Rectangle(int x, int y, int width, int height)
+        {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            leftUpAngle.X = x - width / 2;
+            leftUpAngle.Y = y - height / 2;
+            myBrush = Brushes.White;
+        }
+        public Point[] getPointsOfRect()
+        {
+            Point [] pointsOf = new Point[4];
+            pointsOf[0] = leftUpAngle;
+            pointsOf[1].X = leftUpAngle.X + width;
+            pointsOf[1].Y = leftUpAngle.Y;
+            pointsOf[2].X = leftUpAngle.X;
+            pointsOf[2].Y = leftUpAngle.Y + height;
+            pointsOf[3].X = leftUpAngle.X + width;
+            pointsOf[3].Y = leftUpAngle.Y + height;
+            return pointsOf;
+        }
+        public override void findFrame(int X, int Y)
+        {
+            return;
         }
         public override bool isCursorIn(int X, int Y)
         {
@@ -501,7 +752,7 @@ namespace Lab4_1_OOP_Batyrov
             blackPen.Width = 2;
             gr.FillRectangle(myBrush, leftUpAngle.X, leftUpAngle.Y, width, height);
             if (selected == true) drawSelectedFigure(gr);
-            else gr.DrawRectangle(blackPen, leftUpAngle.X, leftUpAngle.Y, width, height); 
+            else gr.DrawRectangle(blackPen, leftUpAngle.X, leftUpAngle.Y, width, height);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -515,6 +766,7 @@ namespace Lab4_1_OOP_Batyrov
             height += addN;
             leftUpAngle.X = x - width / 2;
             leftUpAngle.Y = y - height / 2;
+            frame = this;
         }
         public override void reduceFigure(int minusN)
         {
@@ -522,6 +774,7 @@ namespace Lab4_1_OOP_Batyrov
             height -= minusN;
             leftUpAngle.X = x - width / 2;
             leftUpAngle.Y = y - height / 2;
+            frame = this;
         }
         public override bool isAbleToMove(int addX, int addY, PictureBox sheet)
         {
@@ -547,6 +800,8 @@ namespace Lab4_1_OOP_Batyrov
                 y += addY;
                 leftUpAngle.Y = y - height / 2;
             }
+            frame = this;
+            notifyConcrete(subjectObservers[1]);
         }
     }
     abstract class FiguresFactory
@@ -605,7 +860,115 @@ namespace Lab4_1_OOP_Batyrov
             sw.Close();
         }
     }
-    
+    abstract class Observer
+    {
+        public abstract void onSubjectChanged(Subject subject);
+    }
+    class StorageObserver : Observer
+    {
+        TreeView myTreeNode;
+        Storage<GeoFigure> myStorage;
+        public StorageObserver(TreeView tn, Storage <GeoFigure> storage)
+        {
+            myTreeNode = tn;
+            myStorage = storage;
+        }
+        public override void onSubjectChanged(Subject subject)
+        {
+            if (subject is GeoFigure)
+            {
+                if ((subject as GeoFigure).checkSelected())
+                {
+                    for (int i = 0; i < myStorage.getCount(); i++)
+                    {
+                        if (myStorage[i] == subject)
+                        {
+                            myTreeNode.SelectedNode = myTreeNode.Nodes[0].Nodes[i];
+                            break;
+                        }
+                            
+                    }
+                }
+            }
+            else
+                printTree();
+        }
+        public void printTree()
+        {
+            myTreeNode.Nodes.Clear();
+            if(myStorage.getCount() != 0)
+            {
+                myTreeNode.Nodes.Add("Все фигуры в рабочей области");
+                for (int i = 0; i < myStorage.getCount(); i++)
+                {
+                    processNode(myTreeNode.Nodes[0], myStorage[i]);
+                }
+            }
+            myTreeNode.ExpandAll();
+        }
+        public void processNode(TreeNode tn, Subject subject)
+        {
+            if(subject is Group && (subject as Group).getFigures().Length != 0)
+            {
+                TreeNode newTreeNode = new TreeNode(subject.GetType().Name);
+                for(int i = 0; i < (subject as Group).getFigures().Length; i++)
+                {
+                    processNode(newTreeNode, (subject as Group).getFigures()[i]);
+                }
+                tn.Nodes.Add(newTreeNode);
+            }
+            else
+            {
+                tn.Nodes.Add((subject as GeoFigure).getInfo());
+            }
+        }
+    }
+    class StickObserver:Observer
+    {
+        Storage<GeoFigure> myStorage;
+        public StickObserver(Storage<GeoFigure> newStorage)
+        {
+            myStorage = newStorage;
+        }
+        public override void onSubjectChanged(Subject subject)
+        {
+            GeoFigure newFigure = subject as GeoFigure;
+            for(int i = 0; i < myStorage.getCount(); i++)
+            {
+                if (newFigure.checkSelected() == true && newFigure.stick == true)
+                {
+                    if(myStorage[i].frame != null && newFigure.checkIntersectionOfTwoRectangles(myStorage[i].frame) == true)
+                    {
+                        myStorage[i].select();
+                    }
+                }
+            }
+        }
+    }
+    class Subject
+    {
+        protected List <Observer> subjectObservers;
+        public bool stick;
+        public Subject()
+        {
+            subjectObservers = new List<Observer>();
+        }
+        public void addObserver(Observer newObserver)
+        {
+            subjectObservers.Add(newObserver);
+        }
+        public void notifyEveryOne()
+        {
+            
+                subjectObservers[0].onSubjectChanged(this);
+            
+        }
+        public void notifyConcrete(Observer obs)
+        {
+            obs.onSubjectChanged(this);
+        }
+    }
+
     class DrawGraph
     {
         Bitmap bitmap;
@@ -657,6 +1020,14 @@ namespace Lab4_1_OOP_Batyrov
                 {
                     i++;
                 }
+            }
+        }
+        public void addStorageObs(Storage<GeoFigure> V, TreeView myTreeView)
+        {
+            StorageObserver newStorageObs = new StorageObserver(myTreeView, V);
+            for (int i = 0; i < V.getCount(); i++)
+            {
+                V[i].addObserver(newStorageObs);
             }
         }
 
