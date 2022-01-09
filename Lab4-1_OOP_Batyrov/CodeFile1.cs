@@ -280,7 +280,7 @@ namespace Lab4_1_OOP_Batyrov
                 return false;
 
             }
-            //TODO: Исправить рамку треугольника, она вниз уезжает, а сверху протыкает,
+            //TODO: Done: Исправить рамку треугольника, она вниз уезжает, а сверху протыкает,
             // исправить конфликты со storage observerom, т.к. переполнение стекаплюс, при выборе
             //фигур, нотифается сторэдж обсервер и из за этого скорее всего
 
@@ -554,7 +554,6 @@ namespace Lab4_1_OOP_Batyrov
                 drawSelectedFigure(gr);
             else 
                 gr.DrawEllipse(blackPen, (x - R), (y - R), 2 * R, 2 * R);
-            gr.DrawRectangle(blackPen, frame.leftUpAngle.X, frame.leftUpAngle.Y, frame.width, frame.height);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -624,7 +623,7 @@ namespace Lab4_1_OOP_Batyrov
         {
             int width = points[2].X - points[1].X;
             int height = points[1].Y - points[0].Y;
-            frame = new Rectangle(x, y, width, height);
+            frame = new Rectangle(x, y - 12, width, height);
         }
         public override bool isCursorIn(int X, int Y)
         {
@@ -641,8 +640,11 @@ namespace Lab4_1_OOP_Batyrov
             Pen blackPen = new Pen(Color.Black);
             blackPen.Width = 2;
             gr.FillPolygon(myBrush, points);
-            if (selected == true) drawSelectedFigure(gr);
-            else gr.DrawPolygon(blackPen, points);
+            if (selected == true) 
+                drawSelectedFigure(gr);
+            else 
+                gr.DrawPolygon(blackPen, points);
+            //gr.DrawRectangle(blackPen, frame.leftUpAngle.X, frame.leftUpAngle.Y, frame.width, frame.height);
         }
         public override void drawSelectedFigure(Graphics gr)
         {
@@ -693,6 +695,7 @@ namespace Lab4_1_OOP_Batyrov
                 points[2].Y = y - tempY1;
             }
             findFrame(x, y);
+            notifyConcrete(subjectObservers[1]);
         }
     }
     class Rectangle : GeoFigure
@@ -798,6 +801,7 @@ namespace Lab4_1_OOP_Batyrov
                 leftUpAngle.Y = y - height / 2;
             }
             frame = this;
+            notifyConcrete(subjectObservers[1]);
         }
     }
     abstract class FiguresFactory
@@ -871,7 +875,7 @@ namespace Lab4_1_OOP_Batyrov
         }
         public override void onSubjectChanged(Subject subject)
         {
-            /*if (subject is GeoFigure)
+            if (subject is GeoFigure)
             {
                 if ((subject as GeoFigure).checkSelected())
                 {
@@ -887,7 +891,7 @@ namespace Lab4_1_OOP_Batyrov
                 }
             }
             else
-                printTree();*/
+                printTree();
         }
         public void printTree()
         {
@@ -933,7 +937,7 @@ namespace Lab4_1_OOP_Batyrov
             {
                 if (newFigure.checkSelected() == true && newFigure.stick == true)
                 {
-                    if(newFigure.checkIntersectionOfTwoRectangles(myStorage[i].frame) == true)
+                    if(myStorage[i].frame != null && newFigure.checkIntersectionOfTwoRectangles(myStorage[i].frame) == true)
                     {
                         myStorage[i].select();
                     }

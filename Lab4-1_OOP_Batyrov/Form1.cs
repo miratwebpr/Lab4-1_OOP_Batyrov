@@ -30,6 +30,7 @@ namespace Lab4_1_OOP_Batyrov
                 if (isCtrl == false)
                 {
                     G.unSelectAll(V);
+                    stickyChBox.Checked = false;
                     for (int i = 0; i < V.getCount(); i++)
                     {
                         if (V[i].isCursorIn(e.X, e.Y))
