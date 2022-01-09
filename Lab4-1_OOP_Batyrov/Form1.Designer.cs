@@ -42,6 +42,7 @@ namespace Lab4_1_OOP_Batyrov
             this.delAllBut = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.label2 = new System.Windows.Forms.Label();
+            this.stickyChBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.sheet)).BeginInit();
             this.SuspendLayout();
             // 
@@ -49,7 +50,7 @@ namespace Lab4_1_OOP_Batyrov
             // 
             this.colorBut.BackgroundImage = global::Lab4_1_OOP_Batyrov.Properties.Resources.color;
             this.colorBut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.colorBut.Location = new System.Drawing.Point(719, 269);
+            this.colorBut.Location = new System.Drawing.Point(967, 274);
             this.colorBut.Name = "colorBut";
             this.colorBut.Size = new System.Drawing.Size(70, 68);
             this.colorBut.TabIndex = 5;
@@ -60,7 +61,7 @@ namespace Lab4_1_OOP_Batyrov
             // 
             this.cursorBut.BackgroundImage = global::Lab4_1_OOP_Batyrov.Properties.Resources.cursor_size;
             this.cursorBut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.cursorBut.Location = new System.Drawing.Point(731, 4);
+            this.cursorBut.Location = new System.Drawing.Point(979, 9);
             this.cursorBut.Name = "cursorBut";
             this.cursorBut.Size = new System.Drawing.Size(48, 61);
             this.cursorBut.TabIndex = 1;
@@ -70,7 +71,7 @@ namespace Lab4_1_OOP_Batyrov
             // rectangleBut
             // 
             this.rectangleBut.BackgroundImage = global::Lab4_1_OOP_Batyrov.Properties.Resources.rectangle_size;
-            this.rectangleBut.Location = new System.Drawing.Point(719, 142);
+            this.rectangleBut.Location = new System.Drawing.Point(967, 147);
             this.rectangleBut.Name = "rectangleBut";
             this.rectangleBut.Size = new System.Drawing.Size(70, 46);
             this.rectangleBut.TabIndex = 3;
@@ -80,7 +81,7 @@ namespace Lab4_1_OOP_Batyrov
             // triangleBut
             // 
             this.triangleBut.BackgroundImage = global::Lab4_1_OOP_Batyrov.Properties.Resources.triangle_size;
-            this.triangleBut.Location = new System.Drawing.Point(719, 195);
+            this.triangleBut.Location = new System.Drawing.Point(967, 200);
             this.triangleBut.Name = "triangleBut";
             this.triangleBut.Size = new System.Drawing.Size(70, 54);
             this.triangleBut.TabIndex = 4;
@@ -90,7 +91,7 @@ namespace Lab4_1_OOP_Batyrov
             // circleBut
             // 
             this.circleBut.BackgroundImage = global::Lab4_1_OOP_Batyrov.Properties.Resources.cirlce_size;
-            this.circleBut.Location = new System.Drawing.Point(719, 71);
+            this.circleBut.Location = new System.Drawing.Point(967, 76);
             this.circleBut.Name = "circleBut";
             this.circleBut.Size = new System.Drawing.Size(70, 65);
             this.circleBut.TabIndex = 2;
@@ -101,9 +102,9 @@ namespace Lab4_1_OOP_Batyrov
             // 
             this.sheet.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.sheet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sheet.Location = new System.Drawing.Point(212, 12);
+            this.sheet.Location = new System.Drawing.Point(215, 13);
             this.sheet.Name = "sheet";
-            this.sheet.Size = new System.Drawing.Size(501, 426);
+            this.sheet.Size = new System.Drawing.Size(746, 538);
             this.sheet.TabIndex = 0;
             this.sheet.TabStop = false;
             this.sheet.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sheet_MouseClick);
@@ -111,7 +112,7 @@ namespace Lab4_1_OOP_Batyrov
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(716, 253);
+            this.label1.Location = new System.Drawing.Point(964, 258);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 6;
@@ -120,7 +121,7 @@ namespace Lab4_1_OOP_Batyrov
             // groupBut
             // 
             this.groupBut.Enabled = false;
-            this.groupBut.Location = new System.Drawing.Point(719, 344);
+            this.groupBut.Location = new System.Drawing.Point(967, 349);
             this.groupBut.Name = "groupBut";
             this.groupBut.Size = new System.Drawing.Size(75, 49);
             this.groupBut.TabIndex = 7;
@@ -131,7 +132,7 @@ namespace Lab4_1_OOP_Batyrov
             // unGroupBut
             // 
             this.unGroupBut.Enabled = false;
-            this.unGroupBut.Location = new System.Drawing.Point(719, 399);
+            this.unGroupBut.Location = new System.Drawing.Point(967, 404);
             this.unGroupBut.Name = "unGroupBut";
             this.unGroupBut.Size = new System.Drawing.Size(75, 49);
             this.unGroupBut.TabIndex = 8;
@@ -141,7 +142,7 @@ namespace Lab4_1_OOP_Batyrov
             // 
             // delAllBut
             // 
-            this.delAllBut.Location = new System.Drawing.Point(295, 442);
+            this.delAllBut.Location = new System.Drawing.Point(476, 557);
             this.delAllBut.Name = "delAllBut";
             this.delAllBut.Size = new System.Drawing.Size(411, 10);
             this.delAllBut.TabIndex = 9;
@@ -153,24 +154,36 @@ namespace Lab4_1_OOP_Batyrov
             // 
             this.treeView1.Location = new System.Drawing.Point(12, 12);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(194, 426);
+            this.treeView1.Size = new System.Drawing.Size(194, 557);
             this.treeView1.TabIndex = 10;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(209, 441);
+            this.label2.Location = new System.Drawing.Point(390, 556);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(80, 13);
             this.label2.TabIndex = 11;
             this.label2.Text = "Удалить все->";
             // 
+            // stickyChBox
+            // 
+            this.stickyChBox.AutoSize = true;
+            this.stickyChBox.Location = new System.Drawing.Point(940, 559);
+            this.stickyChBox.Name = "stickyChBox";
+            this.stickyChBox.Size = new System.Drawing.Size(103, 17);
+            this.stickyChBox.TabIndex = 12;
+            this.stickyChBox.Text = "Липкая фигура";
+            this.stickyChBox.UseVisualStyleBackColor = true;
+            this.stickyChBox.CheckedChanged += new System.EventHandler(this.stickyChBox_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(806, 456);
+            this.ClientSize = new System.Drawing.Size(1049, 579);
+            this.Controls.Add(this.stickyChBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.delAllBut);
@@ -211,6 +224,7 @@ namespace Lab4_1_OOP_Batyrov
         private System.Windows.Forms.Button delAllBut;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox stickyChBox;
     }
 }
 

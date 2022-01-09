@@ -34,6 +34,10 @@ namespace Lab4_1_OOP_Batyrov
                     {
                         if (V[i].isCursorIn(e.X, e.Y))
                         {
+                            if (V[i].stick == true)
+                                stickyChBox.Checked = true;
+                            else
+                                stickyChBox.Checked = false;
                             if (V[i] is Group && unGroupBut.Enabled == false)
                                 unGroupBut.Enabled = true;
                             V[i].select();
@@ -336,11 +340,15 @@ namespace Lab4_1_OOP_Batyrov
         private void Form1_Load(object sender, EventArgs e)
         {
             StorageObserver storageObserver = new StorageObserver(treeView1, V);
+            StickObserver stickObs = new StickObserver(V);
             V.addObserver(storageObserver);
+            V.addObserver(stickObs);
             MyFiguresFactory F = new MyFiguresFactory();
             F.load(V);
             G.drawALLGraph(V);
             sheet.Image = G.GetBitmap();
+            if(V.getCount() != 0)
+                V.subscribeAllFigures(stickObs);
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -377,10 +385,47 @@ namespace Lab4_1_OOP_Batyrov
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            G.unSelectAll(V);
-            V[e.Node.Index].select();
-            G.drawALLGraph(V);
-            sheet.Image = G.GetBitmap();
+            if(e.Action == TreeViewAction.ByKeyboard || e.Action == TreeViewAction.ByMouse)
+            {
+                G.unSelectAll(V);
+                V[e.Node.Index].select();
+                G.drawALLGraph(V);
+                sheet.Image = G.GetBitmap();
+            }
+        }
+
+        private void stickyChBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (stickyChBox.Checked)
+            {
+                int countSelectedFigures = 0;
+                int iTmp = 0;
+                for(int i = 0; i < V.getCount(); i++)
+                {
+                    if (V[i].checkSelected())
+                    {
+                        countSelectedFigures++;
+                        iTmp = i;
+                    }
+                }
+                if(countSelectedFigures == 1)
+                {
+                    //при каждом движении фигуры уведомляем StickObserver, который будет смотреть 
+                    //попали ли координаты одной фигуры в другую, и делать группу по идее, либо выделять эти фигуры
+                    V[iTmp].stick = true;
+                }
+            }
+            else if(stickyChBox.Checked == false)
+            { 
+                for (int i = 0; i < V.getCount(); i++)
+                {
+                    if (V[i].stick)
+                    {
+                        V[i].stick = false;
+                        break;
+                    }
+                }
+            }
         }
     }
 }
